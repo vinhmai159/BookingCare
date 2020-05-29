@@ -1,0 +1,50 @@
+import {Injectable} from '@nestjs/common';
+import {ICalenderService} from '../interfaces';
+import {CalenderRepository, TimeSlotRepository} from '../repositories';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Calender} from '../entities';
+import {v4 as uuid} from 'uuid';
+import {DayOfWeek} from '../constants';
+import {DeleteResult} from 'typeorm';
+import { SaveCalenderDataDto } from '../dto';
+import { UpdateCalenderBodyDto } from '../dto/calender/update-calender-body.dto';
+import { TimeSlot } from '../entities';
+
+@Injectable()
+export class CalenderService implements ICalenderService {
+    constructor (
+        @InjectRepository(Calender)
+        private readonly calenderRepository: CalenderRepository,
+        @InjectRepository(TimeSlot)
+        private readonly timeslotRepository: TimeSlotRepository,
+    ) {}
+
+    async createCalender(calenderDto: SaveCalenderDataDto): Promise<Calender> {
+        // tslint:disable-next-line: new-parens
+        const calender = new Calender;
+        calender.id = uuid();
+        calender.day = calenderDto.day;
+        calender.timeslot = await this.timeslotRepository.getTimeSlotById(calenderDto.timeSlotId);
+        // calender.timeslot = await this.timeslotRepository.getTimeSlotById(tim)
+        return await this.calenderRepository.saveCalender(calender);
+    }
+
+    async getCalender(day: DayOfWeek, timeSlotName: string): Promise<Calender[]> {
+        return await this.calenderRepository.getCalender(day, timeSlotName);
+    }
+
+    async getCalenderById(id: string): Promise<Calender> {
+        return await this.calenderRepository.getCalenderById(id);
+    }
+
+    async deleteCalender(id: string): Promise<DeleteResult> {
+        return await this.calenderRepository.deleteCalender(id);
+    }
+
+    async updateCalender(calenderDto: UpdateCalenderBodyDto): Promise<Calender> {
+        const calenderWillUpdate = await this.calenderRepository.getCalenderById(calenderDto.id);
+        calenderWillUpdate.day = calenderDto.day;
+        calenderWillUpdate.timeslot = await this.timeslotRepository.getTimeSlotById(calenderDto.timeSlotId);
+        return await this.calenderRepository.saveCalender(calenderWillUpdate);
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 8889,
+    "username": "root",
+    "password": "root",
+    "database": "booking-care",
+    "options": {
+        "encrypt": true
+    },
+    "logging": true,
+    "entities": [
+        "src/**/*.entity{.ts,.js}"
+    ],
+    "migrations": [
+        "src/migrations/*{.ts,.js}"
+    ],
+    "migrationsTableName": "Migration",
+    "cli": {
+        "migrationsDir": "src/migrations"
+    },
+    "synchronize": false
+}
