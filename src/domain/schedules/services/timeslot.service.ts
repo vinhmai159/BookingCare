@@ -4,7 +4,6 @@ import {TimeSlot} from '../entities';
 import {Injectable} from '@nestjs/common';
 import {
     DeleteResult,
-    UpdateResult
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {ITimeSlotService} from '../interfaces';
@@ -12,7 +11,7 @@ import {ITimeSlotService} from '../interfaces';
 @Injectable()
 export class TimeslotService implements ITimeSlotService {
     constructor (
-        @InjectRepository(TimeSlot)
+        @InjectRepository(TimeSlotRepository)
         private readonly timeslotRepository: TimeSlotRepository,
     ) {}
 

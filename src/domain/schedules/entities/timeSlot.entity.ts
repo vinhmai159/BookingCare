@@ -1,4 +1,4 @@
-import {Entity, PrimaryColumn, Column} from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('timeslot')
 export class TimeSlot {
@@ -7,4 +7,10 @@ export class TimeSlot {
 
     @Column()
     name: string;
+
+    @CreateDateColumn({ type: 'timestamp' })
+    public createAt: Date;
+
+    @UpdateDateColumn({ type: 'timestamp' })
+    public updateAt: Date;
 }

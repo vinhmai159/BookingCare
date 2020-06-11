@@ -6,6 +6,8 @@ import {
   DoctorsModule,
   SchedulesModule,
 } from '../domain';
+import {LoggingInterceptor, ErrorInterceptor} from '../common';
+
 
 @Module({
   imports: [
@@ -25,6 +27,6 @@ import {
     SchedulesModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, LoggingInterceptor, ErrorInterceptor],
 })
 export class AppModule {}

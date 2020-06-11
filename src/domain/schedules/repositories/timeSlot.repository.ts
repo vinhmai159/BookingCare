@@ -1,4 +1,4 @@
-import { TimeSlot } from '../entities/timeSlot.entity';
+import { TimeSlot } from '../entities';
 import { Repository, EntityRepository, DeleteResult } from 'typeorm';
 
 @EntityRepository(TimeSlot)
