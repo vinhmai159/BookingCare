@@ -11,3 +11,5 @@ export enum DayOfWeek {
 export const TimeSlotServiceToken = 'TimeSlotServiceToken';
 
 export const CalenderServiceToken = 'CalenderServiceToken';
+
+export const ScheduleServiceToken = 'ScheduleServiceToken';

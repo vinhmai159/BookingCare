@@ -1,5 +1,6 @@
 import { Doctor } from '../entities/doctor.entity';
-import {DeleteResult} from 'typeorm';
+import { DeleteResult } from 'typeorm';
+import { Schedule } from '../../schedules';
 export interface IDoctorService {
     createDoctor(doctor: Doctor): Doctor | Promise<Doctor>;
 
@@ -10,4 +11,6 @@ export interface IDoctorService {
     deleteDoctor(id: string): Promise<DeleteResult>;
 
     updateDoctor(doctor: Doctor): Promise<Doctor>;
+
+    doctorLogin(email: string, password: string): Promise<{ accessToken: string}>;
 }

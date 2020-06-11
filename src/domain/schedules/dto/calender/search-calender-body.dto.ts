@@ -4,7 +4,17 @@ import {IsIn, IsNotEmpty} from 'class-validator';
 import {DayOfWeek} from '../../constants';
 
 export class SearchCalenderBodyDto {
-    @ApiProperty()
+    @ApiProperty({
+        enum: [
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+            DayOfWeek.SATURDAY,
+            DayOfWeek.SUNDAY
+        ]
+    })
     @Expose()
     @IsIn([
         DayOfWeek.MONDAY,

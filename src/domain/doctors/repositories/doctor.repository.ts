@@ -39,4 +39,10 @@ export class DoctorRepository extends Repository<Doctor> {
     return null;
     // return doc.save();
   }
+
+  async getDoctorByEmail(email: string): Promise<Doctor> {
+    return await this.createQueryBuilder('doctor')
+                      .where('doctor.email LIKE :email', {email})
+                      .getOne();
+  }
 }

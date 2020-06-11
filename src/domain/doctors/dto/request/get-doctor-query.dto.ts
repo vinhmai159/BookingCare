@@ -4,7 +4,6 @@ import {ApiProperty} from '@nestjs/swagger';
 
 export class GetDoctorQueryDto {
     @Expose()
-    @IsString()
     @ApiProperty()
     name: string;
 }

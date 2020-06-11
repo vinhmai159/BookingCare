@@ -10,7 +10,17 @@ export class UpdateCalenderBodyDto {
     @IsString()
     id: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        enum: [
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+            DayOfWeek.SATURDAY,
+            DayOfWeek.SUNDAY
+        ]
+    })
     @Expose()
     @IsIn([
         DayOfWeek.MONDAY,
