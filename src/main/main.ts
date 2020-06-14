@@ -10,6 +10,8 @@ async function bootstrap() {
 
   // app.useGlobalFilters(new HttpExceptionFilter());
 
+  app.enableCors();
+
   app.useGlobalPipes(new ValidationPipe({transform: true}));
 
   DocumentationModule.load(app);

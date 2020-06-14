@@ -15,8 +15,8 @@ export class Doctor {
   @PrimaryColumn()
   id: string;
 
-  // @ObjectIdColumn()
-  // _id: string;
+  @Column()
+  avatar: string;
 
   @Column()
   fistName: string;
@@ -30,7 +30,7 @@ export class Doctor {
   @Column()
   addressDetail: string;
 
-  @Column()
+  @Column({unique: true})
   email: string;
 
   @Column()

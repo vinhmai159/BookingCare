@@ -1,33 +1,25 @@
 import {Expose} from 'class-transformer';
-import { MaxLength, MinLength, IsNotEmpty} from 'class-validator';
+import { MaxLength, MinLength, IsNotEmpty, IsOptional } from 'class-validator';
 import {ApiProperty} from '@nestjs/swagger';
 
 export class UpdateDoctorQueryDto {
     @Expose()
-    @IsNotEmpty()
     @ApiProperty()
-    id: string;
-
-    @Expose()
-    @ApiProperty()
+    @IsOptional()
     fistName: string;
 
     @Expose()
     @ApiProperty()
+    @IsOptional()
     lastName: string;
 
     @Expose()
     @ApiProperty()
+    @IsOptional()
     description: string;
 
     @Expose()
     @ApiProperty()
+    @IsOptional()
     addressDetail: string;
-
-    @Expose()
-    @ApiProperty()
-    @MaxLength(30)
-    @MinLength(6)
-    email: string;
-
 }
