@@ -1,6 +1,7 @@
 import {Expose} from 'class-transformer';
-import {IsNotEmpty, Matches, MaxLength, MinLength} from 'class-validator';
+import {IsNotEmpty, Matches, MaxLength, MinLength, Validate} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Unique } from 'typeorm';
 
 export class CreateDoctorQueryDto {
     @Expose()
@@ -25,6 +26,8 @@ export class CreateDoctorQueryDto {
     @MaxLength(30)
     @MinLength(6)
     @ApiProperty()
+    @IsNotEmpty()
+    @Validate(Unique)
     email: string;
 
     @Expose()

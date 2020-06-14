@@ -7,6 +7,7 @@ import {DeleteResult} from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import {UpdateDoctorQueryDto, IdDoctorParamDto} from '../dto';
 
 @Injectable()
 export class DoctorService implements IDoctorService {
@@ -15,8 +16,9 @@ export class DoctorService implements IDoctorService {
         private readonly doctorRepository: DoctorRepository,
         private readonly jwtService: JwtService
     ) {}
-    async createDoctor(doctor: Doctor):  Promise<Doctor> {
+    async createDoctor(doctor: Doctor, path: string):  Promise<Doctor> {
         doctor.id = uuid();
+        doctor.avatar = path;
         return await this.doctorRepository.createDoctor(doctor);
     }
     async getDoctorById(id: string): Promise<Doctor> {
@@ -30,12 +32,12 @@ export class DoctorService implements IDoctorService {
     async deleteDoctor(id: string): Promise<DeleteResult> {
         return await this.doctorRepository.deleteDoctor(id);
     }
-    async updateDoctor(doctor: Doctor): Promise<Doctor> {
-        return await this.doctorRepository.updateDoctor(doctor.id, doctor);
+    async updateDoctor(id: string, doctor: UpdateDoctorQueryDto): Promise<Doctor> {
+        return await this.doctorRepository.updateDoctor(id, doctor);
     }
     async doctorLogin(email: string, password: string): Promise<{ accessToken: string}> {
         const doctor = await this.doctorRepository.getDoctorByEmail(email);
-        if ( doctor && this.validatePassword(password, doctor.password)) {
+        if ( doctor && await this.validatePassword(password, doctor.password)) {
             const {
                 id,
                 email,
@@ -57,12 +59,16 @@ export class DoctorService implements IDoctorService {
                 updateAt
             }
             const accessToken = await this.jwtService.sign(payload)
-            return {accessToken, ...doctor}
+            return {accessToken, ...payload}
         }
         throw new UnauthorizedException('INVALID EMAIL OR PASSWORD!');
     }
 
     async validatePassword(password: string, passwordHashed: string): Promise<boolean> {
         return await bcrypt.compare(password,passwordHashed);
+    }
+
+    async saveDoctor(dotor: Doctor): Promise<Doctor> {
+        return await this.doctorRepository.createDoctor(dotor);
     }
 }

@@ -1,5 +1,6 @@
 import { EntityRepository, Repository, DeleteResult, MongoRepository } from 'typeorm';
 import { Doctor } from '../entities';
+import {IdDoctorParamDto, UpdateDoctorQueryDto} from '../dto';
 
 @EntityRepository(Doctor)
 export class DoctorRepository extends Repository<Doctor> {
@@ -33,11 +34,14 @@ export class DoctorRepository extends Repository<Doctor> {
       .execute();
   }
 
-  async updateDoctor(id: string, doctor: Doctor): Promise<Doctor> {
-    let doc = await this.getDoctorById(id);
-    doc = doctor;
-    return null;
-    // return doc.save();
+  async updateDoctor(id: string, doctor: UpdateDoctorQueryDto): Promise<Doctor> {
+    const doc = await this.getDoctorById(id);
+    doc.fistName = doctor.fistName;
+    doc.lastName = doctor.lastName;
+    // doc.avatar = doctor.avat
+    doc.description = doctor.description;
+    doc.addressDetail = doc.addressDetail;
+    return this.save(doc);
   }
 
   async getDoctorByEmail(email: string): Promise<Doctor> {
