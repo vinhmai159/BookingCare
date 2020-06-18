@@ -31,7 +31,8 @@ export class ScheduleController {
         return await this.scheduleService.createOneSchedule(doctor, dto.calenderId);
     }
 
-
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Post(':doctorId')
     async getScheduleByDoctor(@Body() dto: GetScheduleByDoctorQueryDto): Promise<ScheduleByDoctor[]> {
         return await this.scheduleService.getSchedulesByDoctor(dto.doctorId, dto.day);
