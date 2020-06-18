@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   DoctorsModule,
   SchedulesModule,
+  UserModule,
 } from '../domain';
 import {LoggingInterceptor, ErrorInterceptor} from '../common';
 
@@ -24,7 +25,8 @@ import {LoggingInterceptor, ErrorInterceptor} from '../common';
       logging: true
     }),
     DoctorsModule,
-    SchedulesModule
+    SchedulesModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService, LoggingInterceptor, ErrorInterceptor],
