@@ -1,5 +1,6 @@
 import { User } from '../entities';
 import { Repository, EntityRepository, DeleteResult } from 'typeorm';
+import { Schedule } from '../../schedules/entities/schedule.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
