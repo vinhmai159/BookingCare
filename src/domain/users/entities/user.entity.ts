@@ -1,6 +1,7 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, BeforeInsert } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, BeforeInsert, OneToOne, JoinColumn } from 'typeorm';
 import { Expose } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { Schedule } from '../../schedules';
 
 @Entity('users')
 export class User {
@@ -31,6 +32,10 @@ export class User {
 
     @Column()
     gender: string;
+
+    @OneToOne(() => Schedule)
+    @JoinColumn()
+    schedule: Schedule;
 
     @CreateDateColumn({ type: 'timestamp' })
     createAt: Date;

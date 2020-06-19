@@ -1,19 +1,38 @@
-import { Controller, Inject, Post, HttpStatus, HttpCode, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import {IUserService} from '../interfaces';
+import { Controller, Inject, Post, HttpStatus, HttpCode, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { IUserService } from '../interfaces';
 import { UserServiceToken } from '../contants';
-import {User} from '../entities';
+import { User } from '../entities';
 import { DeleteResult } from 'typeorm';
-import {CreateUserBodyDto, GetUserBodyDto, IdUserParamDto, UpdateUserBodyDto} from '../dto';
+import {
+    CreateUserBodyDto,
+    GetUserBodyDto,
+    IdUserParamDto,
+    UpdateUserBodyDto,
+    UserLogInBodyDto,
+    BookingScheduleBodyDto
+} from '../dto';
 import { plainToClass } from 'class-transformer';
+import { Schedule } from '../../schedules';
+import { AuthGuard, jwt } from '../../../common';
+import { isNullOrUndefined } from 'util'
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-    constructor (
+    constructor(
         @Inject(UserServiceToken)
         private readonly userService: IUserService
     ) {}
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'The request is successfully.'
+    })
+    @Post('login')
+    async login(@Body() loginDto: UserLogInBodyDto): Promise<{ accessToken: string }> {
+        return await this.userService.userLogin(loginDto.email, loginDto.password);
+    }
 
     @ApiResponse({
         status: HttpStatus.OK,
@@ -22,7 +41,7 @@ export class UserController {
     })
     @HttpCode(HttpStatus.OK)
     @Post('create')
-    public async createUser(@Body() bodyDto: CreateUserBodyDto): Promise<User>{
+    public async createUser(@Body() bodyDto: CreateUserBodyDto): Promise<User> {
         const user = await this.userService.createUser(plainToClass(User, bodyDto));
         return user;
     }
@@ -34,13 +53,9 @@ export class UserController {
     })
     @HttpCode(HttpStatus.OK)
     @Post()
-    public async getUsers(@Body() bodydto: GetUserBodyDto): Promise<any>{
-        const [data, count] = await this.userService.getUsers(
-            bodydto.name,
-            bodydto.email,
-            bodydto.address
-        )
-        return {data, count};
+    public async getUsers(@Body() bodydto: GetUserBodyDto): Promise<any> {
+        const [data, count] = await this.userService.getUsers(bodydto.name, bodydto.email, bodydto.address);
+        return { data, count };
     }
 
     @ApiResponse({
@@ -48,11 +63,16 @@ export class UserController {
         // type: ,
         description: 'Get a user is successfully'
     })
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     @Post('/:id')
-    public async getUserById(@Param() paramDto: IdUserParamDto): Promise<User>{
-        const user = await this.userService.getUserById(paramDto.id);
-        return user;
+    public async getUserById(@jwt() user: User, @Param() paramDto: IdUserParamDto): Promise<User> {
+        if (!isNullOrUndefined(user)) {
+            paramDto.id = user.id;
+        }
+        const exitUser = await this.userService.getUserById(paramDto.id);
+        return exitUser;
     }
 
     @ApiResponse({
@@ -60,11 +80,20 @@ export class UserController {
         // type: ,
         description: 'Update a user is successfully'
     })
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     @Post('/:id/update')
-    public async updateUser(@Param() paramDto: IdUserParamDto, @Body() bodyDto: UpdateUserBodyDto): Promise<User>{
-        const user = await this.userService.updateUser(paramDto.id, plainToClass(User, bodyDto));
-        return user;
+    public async updateUser(
+        @jwt() user: User,
+        @Param() paramDto: IdUserParamDto,
+        @Body() bodyDto: UpdateUserBodyDto
+    ): Promise<User> {
+        if (!isNullOrUndefined(user)) {
+            paramDto.id = user.id;
+        }
+        const exitUser = await this.userService.updateUser(paramDto.id, plainToClass(User, bodyDto));
+        return exitUser;
     }
 
     @ApiResponse({
@@ -72,9 +101,22 @@ export class UserController {
         // type: ,
         description: 'Delete a user is successfully'
     })
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     @Post('/:id/delete')
-    public async deleteUser(@Param() paramDto: IdUserParamDto): Promise<DeleteResult>{
+    public async deleteUser(@jwt() user: User, @Param() paramDto: IdUserParamDto): Promise<DeleteResult> {
+        if (!isNullOrUndefined(user)) {
+            paramDto.id = user.id;
+        }
         return await this.userService.deleteUser(paramDto.id);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Post('/:id/booking-schedule')
+    public async bookingSchedule(@jwt() user: User, @Body() bodyDto: BookingScheduleBodyDto): Promise<Schedule> {
+        const data = await this.userService.bookingSchedule(user.id, bodyDto.scheduleId);
+        return data;
     }
 }
