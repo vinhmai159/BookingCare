@@ -11,6 +11,8 @@ export class ScheduleRepository extends Repository<Schedule> {
     async getScheduleById(id: string): Promise<Schedule> {
         return await this.createQueryBuilder('schedule')
                             .where('schedule.id LIKE :id', {id})
+                            .leftJoinAndSelect('schedule.calender', 'calender')
+                            .leftJoinAndSelect('calender.timeslot', 'timeslot')
                             .getOne()
     }
 
