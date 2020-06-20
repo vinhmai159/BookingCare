@@ -9,6 +9,7 @@ import { Schedule } from '../../schedules/entities/schedule.entity';
 import { ScheduleRepository } from '../../schedules';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import * as Moment from 'moment';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -73,6 +74,26 @@ export class UserService implements IUserService {
     public async bookingSchedule(id: string, scheduleId: string): Promise<Schedule> {
         const user = await this.userRepository.getUserById(id);
         const schedule = await this.scheduleRepository.getScheduleById(scheduleId);
+
+        if (schedule.busy) {
+            throw new BadRequestException('The schedule of doctor is busy');
+        }
+
+        const current = new Date();
+        const hourCurrentString = Moment(current).format('hh');
+
+        const hourCurrent = Number(hourCurrentString);
+
+        const exitTimeSlot = schedule.calender.timeslot.name;
+
+        const timeSlotArr = exitTimeSlot.split(':');
+
+        const timeSlot = Number(timeSlotArr[0]);
+
+        if (timeSlot < hourCurrent - 2) {
+            throw new BadRequestException('Can not booking the schedule for doctor');
+        }
+
         user.schedule = schedule;
         await this.userRepository.saveUser(user);
         schedule.busy = true;
