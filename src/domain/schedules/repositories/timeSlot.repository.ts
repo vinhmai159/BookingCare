@@ -14,6 +14,7 @@ export class TimeSlotRepository extends Repository<TimeSlot> {
             timeSlot.andWhere('timeslot.name = :name', {name: `%${name}%`});
         }
 
+        timeSlot.orderBy('timeslot.name', 'ASC');
         return await timeSlot.getMany();
     }
 
