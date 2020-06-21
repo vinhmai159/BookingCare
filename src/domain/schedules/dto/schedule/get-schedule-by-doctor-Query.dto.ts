@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsNotEmpty, IsIn } from 'class-validator';
+import { IsNotEmpty, IsIn, IsOptional } from 'class-validator';
 import {DayOfWeek} from '../../constants';
 
 export class GetScheduleByDoctorQueryDto {
@@ -30,5 +30,6 @@ export class GetScheduleByDoctorQueryDto {
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY
     ])
-    day: DayOfWeek;
+    @IsOptional()
+    day?: DayOfWeek;
 }
