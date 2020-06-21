@@ -8,7 +8,9 @@ export interface IScheduleService {
 
     updateSchedulesforDoctor(doctor: Doctor, calenderIds: string[]): Schedule[] | Promise<Schedule[]>;
 
-    getSchedulesByDoctor(doctorId: string, day: DayOfWeek): any[] | Promise<any[]>;
+    getSchedulesByDoctor(doctorId: string, day?: DayOfWeek): any[] | Promise<any[]>;
+
+    // deleteall
 
     createOneSchedule(doctor: Doctor, calenderId: string):Schedule | Promise<Schedule>;
 

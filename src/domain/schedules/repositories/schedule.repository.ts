@@ -16,7 +16,7 @@ export class ScheduleRepository extends Repository<Schedule> {
             .getOne();
     }
 
-    async getScheduleByDoctor(doctorId: string, day: DayOfWeek): Promise<Schedule[]> {
+    async getScheduleByDoctor(doctorId: string, day?: DayOfWeek): Promise<Schedule[]> {
         const scheduleByDoctor = this.createQueryBuilder('schedule')
             .where('schedule.doctorId LIKE :doctorId', { doctorId })
             .leftJoinAndSelect('schedule.calender', 'calender')
@@ -25,6 +25,8 @@ export class ScheduleRepository extends Repository<Schedule> {
         if (day) {
             scheduleByDoctor.andWhere('calender.day = :day', { day });
         }
+
+        scheduleByDoctor.orderBy('calender.day', 'ASC').addOrderBy('timeslot.name', 'ASC');
 
         return await scheduleByDoctor.getMany();
     }

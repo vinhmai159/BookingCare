@@ -11,12 +11,12 @@ import { DayOfWeek, CalenderServiceToken } from '../constants';
 import { IDoctorService } from '../../doctors/interfaces';
 import { DoctorServiceToken } from '../../doctors/constants';
 import { DoctorRepository } from '../../doctors/repositories';
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { DeleteResult } from 'typeorm';
-import {ScheduleByDoctor} from '../dto';
+import { ScheduleByDoctor } from '../dto';
 import { throwError } from 'rxjs';
-import {BaseExceptionFilter} from '@nestjs/core';
-import {count} from 'console';
+import { BaseExceptionFilter } from '@nestjs/core';
+import { count } from 'console';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
@@ -45,14 +45,47 @@ export class ScheduleService implements IScheduleService {
         return scheduleList;
     }
 
-    public async updateSchedulesforDoctor(doctor: Doctor, calenderIds: string[]): Promise<Schedule[]> {
-        try {
-        await this.scheduleRepository.deleteAllScheduleByDoctor(doctor.id);
-        } catch(e) {
-            throw new BadRequestException('The Schedule had booking by a user, CAN NOT CHANGE THE SCHEDULE.');
+    public async updateSchedulesforDoctor(doctor: Doctor, calenderIds: string[]): Promise<any> {
+        const scheduleForDoctor = await this.scheduleRepository.getScheduleByDoctor(doctor.id);
+        const exitCalenderIds = [];
+        const errors = [];
+
+        for (const schedule of scheduleForDoctor) {
+            exitCalenderIds.push(schedule.calender.id);
         }
-        const updateSchdeuleBYDoctor = await this.createSchedule(doctor, calenderIds);
-        return updateSchdeuleBYDoctor;
+
+        for (const calenderId of calenderIds) {
+            let check = 1;
+            for (const exitCalenderId of exitCalenderIds) {
+                if ( calenderId === exitCalenderId) {
+                    check = 0;
+                }
+            }
+            if (check) {
+                await this.createOneSchedule(doctor, calenderId);
+            }
+        }
+
+        for (const exitCalenderId of exitCalenderIds) {
+            let check = 1;
+            for (const calenderId of calenderIds) {
+                if ( exitCalenderId === calenderId ) {
+                    check = 0;
+                }
+            }
+            if (check) {
+                try {
+                    await this.scheduleRepository.deleteSchedulesByDoctor(doctor.id, exitCalenderId);
+                } catch  {
+                    errors.push({error:`The schedule '${exitCalenderId}' can not delete, that is have been booking by a user.`})
+                }
+            }
+        }
+
+        return {
+            data: await this.getSchedulesByDoctor(doctor.id),
+            errors,
+        };
     }
 
     async createOneSchedule(doctor: Doctor, calenderId: string): Promise<Schedule> {
@@ -70,18 +103,17 @@ export class ScheduleService implements IScheduleService {
         let deletedId = [];
         let error = [];
         for (const element of calenderIds) {
-           try {
-            const scheduleDelete = await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, element);
-            if (scheduleDelete) {
-                count += 1;
-                deletedId.push(doctorId);
+            try {
+                const scheduleDelete = await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, element);
+                if (scheduleDelete) {
+                    count += 1;
+                    deletedId.push(doctorId);
+                }
+            } catch {
+                error.push({
+                    error: `The schedule '${element}' can not delete, that is have been booking by a user.`
+                });
             }
-           } catch (e) {
-               error.push({
-                   error: e,
-                   message: `The schedule '${element}' is can not delete, that is have been booking by a user. `
-               })
-           }
         }
         return {
             deletedId,
@@ -94,20 +126,68 @@ export class ScheduleService implements IScheduleService {
         return await this.scheduleRepository.deleteAllScheduleByDoctor(doctorId);
     }
 
-    async getSchedulesByDoctor(doctorId: string, day: DayOfWeek): Promise<any[]> {
+    async getSchedulesByDoctor(doctorId: string, day?: DayOfWeek): Promise<any> {
         const datas = await this.scheduleRepository.getScheduleByDoctor(doctorId, day);
-        // let dayy;
-        // let timeSlot;
-        // tslint:disable-next-line: new-parens
-        const result = [];
+
+        const result = {
+            MONDAY: [],
+            TUESDAY: [],
+            WEDNESDAY: [],
+            THURSDAY: [],
+            FRIDAY: [],
+            SATURDAY: [],
+            SUNDAY: []
+        };
 
         for (const data of datas) {
-            // tslint:disable-next-line: new-parens
-            const test = new ScheduleByDoctor;
+            if (data.calender.day === DayOfWeek.MONDAY) {
+                result.MONDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
 
-            test.day = data.calender.day;
-            test.timeSlot = data.calender.timeslot.name;
-            result.push(test);
+            if (data.calender.day === DayOfWeek.TUESDAY) {
+                result.TUESDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.WEDNESDAY) {
+                result.WEDNESDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.THURSDAY) {
+                result.THURSDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.FRIDAY) {
+                result.FRIDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.SATURDAY) {
+                result.SATURDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.SUNDAY) {
+                result.SUNDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
         }
         return result;
     }
