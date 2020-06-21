@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException, ExceptionFilter, ConflictException } from '@nestjs/common';
 import { IScheduleService, ICalenderService } from '../interfaces';
 import { ScheduleRepository } from '../repositories';
 import { Schedule } from '../entities';
@@ -14,6 +14,9 @@ import { DoctorRepository } from '../../doctors/repositories';
 import {v4 as uuid} from 'uuid';
 import { DeleteResult } from 'typeorm';
 import {ScheduleByDoctor} from '../dto';
+import { throwError } from 'rxjs';
+import {BaseExceptionFilter} from '@nestjs/core';
+import {count} from 'console';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
@@ -42,6 +45,16 @@ export class ScheduleService implements IScheduleService {
         return scheduleList;
     }
 
+    public async updateSchedulesforDoctor(doctor: Doctor, calenderIds: string[]): Promise<Schedule[]> {
+        try {
+        await this.scheduleRepository.deleteAllScheduleByDoctor(doctor.id);
+        } catch(e) {
+            throw new BadRequestException('The Schedule had booking by a user, CAN NOT CHANGE THE SCHEDULE.');
+        }
+        const updateSchdeuleBYDoctor = await this.createSchedule(doctor, calenderIds);
+        return updateSchdeuleBYDoctor;
+    }
+
     async createOneSchedule(doctor: Doctor, calenderId: string): Promise<Schedule> {
         const schedule = new Schedule();
         schedule.id = uuid();
@@ -52,12 +65,33 @@ export class ScheduleService implements IScheduleService {
         return await this.scheduleRepository.createSchedule(schedule);
     }
 
-    async deleteSchedulesBydoctor(doctorId: string, calenderIds: string[]): Promise<DeleteResult> {
-        let result: DeleteResult | PromiseLike<DeleteResult>;
+    async deleteSchedulesBydoctor(doctorId: string, calenderIds: string[]): Promise<any> {
+        let count = 0;
+        let deletedId = [];
+        let error = [];
         for (const element of calenderIds) {
-           result =  await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, element);
+           try {
+            const scheduleDelete = await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, element);
+            if (scheduleDelete) {
+                count += 1;
+                deletedId.push(doctorId);
+            }
+           } catch (e) {
+               error.push({
+                   error: e,
+                   message: `The schedule '${element}' is can not delete, that is have been booking by a user. `
+               })
+           }
         }
-        return result;
+        return {
+            deletedId,
+            total: count,
+            error
+        };
+    }
+
+    private async deleteAllScheduleByDoctor(doctorId: string): Promise<DeleteResult> {
+        return await this.scheduleRepository.deleteAllScheduleByDoctor(doctorId);
     }
 
     async getSchedulesByDoctor(doctorId: string, day: DayOfWeek): Promise<any[]> {

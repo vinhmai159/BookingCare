@@ -2,12 +2,17 @@ import { Controller, Post, Inject, Query, Body, Delete, UseGuards } from '@nestj
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ScheduleService } from '../services';
 import { Schedule } from '../entities';
-import {CreateScheduleQueryDto, GetScheduleByDoctorQueryDto, CreateOneSchedulesQueryDto, ScheduleByDoctor} from '../dto';
+import {
+    CreateScheduleQueryDto,
+    GetScheduleByDoctorQueryDto,
+    CreateOneSchedulesQueryDto,
+    ScheduleByDoctor
+} from '../dto';
 import { ScheduleServiceToken } from '../constants';
-import {IScheduleService} from '../interfaces';
-import {AuthGuard, jwt} from '../../../common';
+import { IScheduleService } from '../interfaces';
+import { AuthGuard, jwt } from '../../../common';
 import { Doctor } from '../../doctors';
-import {DeleteResult} from 'typeorm';
+import { DeleteResult } from 'typeorm';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -31,8 +36,6 @@ export class ScheduleController {
         return await this.scheduleService.createOneSchedule(doctor, dto.calenderId);
     }
 
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard)
     @Post(':doctorId')
     async getScheduleByDoctor(@Body() dto: GetScheduleByDoctorQueryDto): Promise<ScheduleByDoctor[]> {
         return await this.scheduleService.getSchedulesByDoctor(dto.doctorId, dto.day);
@@ -43,5 +46,12 @@ export class ScheduleController {
     @Delete('delete/:doctorId/:calenderIds')
     async deleteSchedules(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<DeleteResult> {
         return await this.scheduleService.deleteSchedulesBydoctor(doctor.id, dto.calenderIds);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Delete('update/:doctorId/:calenderIds')
+    async updateSchedulesByDoctor(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<Schedule[]> {
+        return await this.scheduleService.updateSchedulesforDoctor(doctor, dto.calenderIds);
     }
 }

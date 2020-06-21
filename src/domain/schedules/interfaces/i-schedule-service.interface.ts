@@ -6,6 +6,8 @@ import {Doctor} from '../../doctors';
 export interface IScheduleService {
     createSchedule(doctor: Doctor, calenderIds: string[]): Schedule[] | Promise<Schedule[]>;
 
+    updateSchedulesforDoctor(doctor: Doctor, calenderIds: string[]): Schedule[] | Promise<Schedule[]>;
+
     getSchedulesByDoctor(doctorId: string, day: DayOfWeek): any[] | Promise<any[]>;
 
     createOneSchedule(doctor: Doctor, calenderId: string):Schedule | Promise<Schedule>;
