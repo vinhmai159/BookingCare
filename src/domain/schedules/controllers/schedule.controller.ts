@@ -1,4 +1,4 @@
-import { Controller, Post, Inject, Query, Body, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Inject, Query, Body, Delete, UseGuards, Put } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ScheduleService } from '../services';
 import { Schedule } from '../entities';
@@ -41,6 +41,13 @@ export class ScheduleController {
         return await this.scheduleService.getSchedulesByDoctor(dto.doctorId, dto.day);
     }
 
+    // @ApiBearerAuth()
+    // @UseGuards(AuthGuard)
+    // @Delete('delete/:doctorId')
+    // async deleteAllSchedules(@jwt() doctor: Doctor): Promise<DeleteResult> {
+    //     return await this.scheduleService.(doctor.id, dto.calenderIds);
+    // }
+
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Delete('delete/:doctorId/:calenderIds')
@@ -50,7 +57,7 @@ export class ScheduleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @Delete('update/:doctorId/:calenderIds')
+    @Put('update/:doctorId/:calenderIds')
     async updateSchedulesByDoctor(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<Schedule[]> {
         return await this.scheduleService.updateSchedulesforDoctor(doctor, dto.calenderIds);
     }
