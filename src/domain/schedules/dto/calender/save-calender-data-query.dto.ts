@@ -25,6 +25,7 @@ export class SaveCalenderDataDto {
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY
     ])
+    @IsNotEmpty()
     day: DayOfWeek;
 
     @ApiProperty()

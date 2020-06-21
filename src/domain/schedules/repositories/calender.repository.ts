@@ -22,6 +22,7 @@ export class CalenderRepository extends Repository<Calender>{
 
         return await calender.leftJoinAndSelect('calender.timeslot', 'timeslot')
                                 .orderBy('calender.day', 'ASC')
+                                .addOrderBy('timeslot.name', 'ASC')
                                 .getMany();
     }
 

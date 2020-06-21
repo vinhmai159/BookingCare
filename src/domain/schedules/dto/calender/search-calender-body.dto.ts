@@ -1,6 +1,6 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {Expose} from 'class-transformer';
-import {IsIn, IsNotEmpty} from 'class-validator';
+import {IsIn, IsNotEmpty, IsOptional} from 'class-validator';
 import {DayOfWeek} from '../../constants';
 
 export class SearchCalenderBodyDto {
@@ -25,10 +25,11 @@ export class SearchCalenderBodyDto {
         DayOfWeek.SATURDAY,
         DayOfWeek.SUNDAY
     ])
-    day: DayOfWeek;
+    @IsOptional()
+    day?: DayOfWeek;
 
     @ApiProperty()
     @Expose()
-    @IsNotEmpty()
-    timeSlotName: string;
+    @IsOptional()
+    timeSlotName?: string;
 }
