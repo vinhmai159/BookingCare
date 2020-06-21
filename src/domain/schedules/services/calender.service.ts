@@ -29,9 +29,71 @@ export class CalenderService implements ICalenderService {
         return await this.calenderRepository.saveCalender(calender);
     }
 
-    async getCalender(day: DayOfWeek, timeSlotName: string): Promise<Calender[]> {
-        return await this.calenderRepository.getCalender(day, timeSlotName);
+    async getCalender(day: DayOfWeek, timeSlotName: string): Promise<any> {
+        const calenders = await this.calenderRepository.getCalender(day, timeSlotName);
+        const result = {
+            MONDAY: [],
+            TUESDAY: [],
+            WEDNESDAY: [],
+            THURSDAY: [],
+            FRIDAY: [],
+            SATURDAY: [],
+            SUNDAY: [],
+        };
+
+        for (const calender of calenders) {
+            if (calender.day === DayOfWeek.MONDAY) {
+                result.MONDAY.push({
+                    calenderId: calender.id,
+                    timeSlot: calender.timeslot.name
+                })
+            }
+
+            if (calender.day === DayOfWeek.TUESDAY) {
+                result.TUESDAY.push({
+                    calenderId: calender.id,
+                    timeSlot: calender.timeslot.name
+                })
+            }
+
+            if (calender.day === DayOfWeek.WEDNESDAY) {
+                result.WEDNESDAY.push({
+                    calenderId: calender.id,
+                    timeSlot: calender.timeslot.name
+                })
+            }
+
+            if (calender.day === DayOfWeek.THURSDAY) {
+                result.THURSDAY.push({
+                    calenderId: calender.id,
+                    timeSlot: calender.timeslot.name
+                })
+            }
+
+            if (calender.day === DayOfWeek.FRIDAY) {
+                result.FRIDAY.push({
+                    calenderId: calender.id,
+                    timeSlot: calender.timeslot.name
+                })
+            }
+
+            if (calender.day === DayOfWeek.SATURDAY) {
+                result.SATURDAY.push({
+                    calenderId: calender.id,
+                    timeSlot: calender.timeslot.name
+                })
+            }
+
+            if (calender.day === DayOfWeek.SUNDAY) {
+                result.SUNDAY.push({
+                    calenderId: calender.id,
+                    timeSlot: calender.timeslot.name
+                })
+            }
+        }
+        return result;
     }
+
 
     async getCalenderById(id: string): Promise<Calender> {
         return await this.calenderRepository.getCalenderById(id);
