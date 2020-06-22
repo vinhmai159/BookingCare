@@ -17,7 +17,7 @@ export class CalenderRepository extends Repository<Calender>{
 
         if (timeSlotName) {
             calender.leftJoin('calender.timeslot', 'timeslot')
-                    .orWhere('timeslot.name = :timeSlotName', {timeSlotName: `%${timeSlotName}%`});
+                    .orWhere('timeslot.name LIKE :timeSlotName', {timeSlotName: `%${timeSlotName}%`});
         }
 
         return await calender.leftJoinAndSelect('calender.timeslot', 'timeslot')

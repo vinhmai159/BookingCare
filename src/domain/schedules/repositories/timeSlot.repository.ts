@@ -11,7 +11,7 @@ export class TimeSlotRepository extends Repository<TimeSlot> {
         const timeSlot = this.createQueryBuilder('timeslot');
 
         if (name) {
-            timeSlot.andWhere('timeslot.name = :name', {name: `%${name}%`});
+            timeSlot.andWhere('timeslot.name LIKE :name', {name: `%${name}%`});
         }
 
         timeSlot.orderBy('timeslot.name', 'ASC');

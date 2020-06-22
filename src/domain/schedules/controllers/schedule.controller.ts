@@ -1,4 +1,4 @@
-import { Controller, Post, Inject, Query, Body, Delete, UseGuards, Put } from '@nestjs/common';
+import { Controller, Post, Inject, Query, Body, Delete, UseGuards, Put, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ScheduleService } from '../services';
 import { Schedule } from '../entities';
@@ -6,7 +6,8 @@ import {
     CreateScheduleQueryDto,
     GetScheduleByDoctorQueryDto,
     CreateOneSchedulesQueryDto,
-    ScheduleByDoctor
+    ScheduleByDoctor,
+    GetScheduleByDoctorParamDto
 } from '../dto';
 import { ScheduleServiceToken } from '../constants';
 import { IScheduleService } from '../interfaces';
@@ -36,9 +37,16 @@ export class ScheduleController {
         return await this.scheduleService.createOneSchedule(doctor, dto.calenderId);
     }
 
-    @Post(':doctorId')
-    async getScheduleByDoctor(@Body() dto: GetScheduleByDoctorQueryDto): Promise<ScheduleByDoctor[]> {
-        return await this.scheduleService.getSchedulesByDoctor(dto.doctorId, dto.day);
+    @Post('show-schedule')
+    async getScheduleByDoctorForUser(@Body() dto: GetScheduleByDoctorQueryDto): Promise<ScheduleByDoctor[]> {
+        return await this.scheduleService.getSchedulesByDoctorForUser(dto.doctorId, dto.day);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Get('/get-schedule-for-doctor')
+    async getScheduleByDoctor(@jwt() doctor: Doctor): Promise<ScheduleByDoctor[]> {
+        return await this.scheduleService.getSchedulesByDoctor(doctor.id);
     }
 
     // @ApiBearerAuth()

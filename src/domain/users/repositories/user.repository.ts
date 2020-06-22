@@ -28,7 +28,7 @@ export class UserRepository extends Repository<User> {
             .addOrderBy('user.email')
             .addOrderBy('user.address')
 
-        return await users.orderBy('user.fistName').getManyAndCount();
+        return await users.getManyAndCount();
     }
 
     public async getUserById(id: string): Promise<User> {

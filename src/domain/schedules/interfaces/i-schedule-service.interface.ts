@@ -10,7 +10,7 @@ export interface IScheduleService {
 
     getSchedulesByDoctor(doctorId: string, day?: DayOfWeek): any[] | Promise<any[]>;
 
-    // deleteall
+    getSchedulesByDoctorForUser(doctorId: string, day?: DayOfWeek): any[] | Promise<any[]>;
 
     createOneSchedule(doctor: Doctor, calenderId: string):Schedule | Promise<Schedule>;
 
