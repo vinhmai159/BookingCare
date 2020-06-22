@@ -21,7 +21,7 @@ export class CalenderController {
     ) {}
 
     @Post('create')
-    async createCalender(@Query() calenderDto: SaveCalenderDataDto): Promise<Calender> {
+    async createCalender(@Body() calenderDto: SaveCalenderDataDto): Promise<Calender> {
         return await this.calenderService.createCalender(calenderDto)
     }
 
@@ -36,12 +36,12 @@ export class CalenderController {
     }
 
     @Post('delete/:id')
-    async deleteCalender(@Query() dto : CalenderIdParamDto): Promise<DeleteResult> {
+    async deleteCalender(@Body() dto : CalenderIdParamDto): Promise<DeleteResult> {
         return await this.calenderService.deleteCalender(dto.id);
     }
 
     @Post('update/:id')
-    async updateCalender(@Query() dto : UpdateCalenderBodyDto): Promise<Calender> {
+    async updateCalender(@Body() dto : UpdateCalenderBodyDto): Promise<Calender> {
         return await this.calenderService.updateCalender(dto);
     }
 }

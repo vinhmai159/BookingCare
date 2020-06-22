@@ -6,6 +6,7 @@ import {
   DoctorsModule,
   SchedulesModule,
   UserModule,
+  ExpertiseModule,
 } from '../domain';
 import {LoggingInterceptor, ErrorInterceptor} from '../common';
 
@@ -26,7 +27,8 @@ import {LoggingInterceptor, ErrorInterceptor} from '../common';
     }),
     DoctorsModule,
     SchedulesModule,
-    UserModule
+    UserModule,
+    ExpertiseModule
   ],
   controllers: [AppController],
   providers: [AppService, LoggingInterceptor, ErrorInterceptor],

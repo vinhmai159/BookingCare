@@ -7,15 +7,18 @@ import {
   BeforeInsert,
   ObjectIdColumn,
   Entity,
+  JoinColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import {Expertise} from '../../expertise';
+import { OneToOne } from 'typeorm';
 
 @Entity('doctor')
 export class Doctor {
   @PrimaryColumn()
   id: string;
 
-  @Column()
+  @Column({ default: null})
   avatar: string;
 
   @Column()
@@ -38,6 +41,10 @@ export class Doctor {
 
   @Column()
   salt: string;
+
+  @OneToOne(() => Expertise)
+  @JoinColumn()
+  expertises: Expertise[];
 
   @CreateDateColumn({ type: 'timestamp' })
   public createAt: Date;

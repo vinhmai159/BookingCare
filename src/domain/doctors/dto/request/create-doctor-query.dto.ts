@@ -1,7 +1,8 @@
 import {Expose} from 'class-transformer';
-import {IsNotEmpty, Matches, MaxLength, MinLength, Validate} from 'class-validator';
+import {IsNotEmpty, Matches, MaxLength, MinLength, Validate, IsOptional} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Unique } from 'typeorm';
+import { Expertise } from '../../../expertise';
 
 export class CreateDoctorQueryDto {
     @Expose()
@@ -21,6 +22,11 @@ export class CreateDoctorQueryDto {
     @Expose()
     @ApiProperty()
     addressDetail: string;
+
+    @Expose()
+    @ApiProperty()
+    @IsOptional()
+    expertises: Expertise[];
 
     @Expose()
     @MaxLength(30)

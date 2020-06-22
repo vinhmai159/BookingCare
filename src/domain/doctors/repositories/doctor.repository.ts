@@ -1,6 +1,7 @@
 import { EntityRepository, Repository, DeleteResult } from 'typeorm';
 import { Doctor } from '../entities';
 import { UpdateDoctorQueryDto } from '../dto';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Doctor)
 export class DoctorRepository extends Repository<Doctor> {
@@ -8,10 +9,16 @@ export class DoctorRepository extends Repository<Doctor> {
         const doctor = this.createQueryBuilder('doctor');
 
         if (name) {
-            doctor.andWhere('doctor.fistName = :name OR doctor.lastName = :name', {
+            doctor.andWhere('doctor.fistName LIKE :name OR doctor.lastName LIKE :name', {
                 name: `%${name}%`
             });
         }
+
+        // if (expertise) {
+        //     doctor.andWhere(':expertise IN SELECT doctor.expertises', {
+        //         name: `%${name}%`
+        //     });
+        // }
 
         return await doctor.getMany();
     }
@@ -35,7 +42,12 @@ export class DoctorRepository extends Repository<Doctor> {
     }
 
     async updateDoctor(id: string, doctor: UpdateDoctorQueryDto): Promise<Doctor> {
-        const doc = await this.getDoctorById(id);
+        let doc;
+        try {
+            doc = await this.getDoctorById(id);
+        } catch {
+            throw new NotFoundException('Can not found a doctor');
+        }
         doc.fistName = doctor.fistName;
         doc.lastName = doctor.lastName;
         // doc.avatar = doctor.avat

@@ -14,9 +14,6 @@ import { DoctorRepository } from '../../doctors/repositories';
 import { v4 as uuid } from 'uuid';
 import { DeleteResult } from 'typeorm';
 import { ScheduleByDoctor } from '../dto';
-import { throwError } from 'rxjs';
-import { BaseExceptionFilter } from '@nestjs/core';
-import { count } from 'console';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
@@ -40,7 +37,6 @@ export class ScheduleService implements IScheduleService {
             schedule.calender = calender;
             scheduleList[key] = await this.scheduleRepository.createSchedule(schedule);
         }
-        // console.log(scheduleList);
 
         return scheduleList;
     }
@@ -77,7 +73,8 @@ export class ScheduleService implements IScheduleService {
                 try {
                     await this.scheduleRepository.deleteSchedulesByDoctor(doctor.id, exitCalenderId);
                 } catch  {
-                    errors.push({error:`The schedule '${exitCalenderId}' can not delete, that is have been booking by a user.`})
+                    const exitCaldender = await this.calenderServide.getCalenderById(exitCalenderId);
+                    errors.push(`The schedule '${exitCaldender.day}: ${exitCaldender.timeslot.name}' can not delete, that is have been booking by a user.`)
                 }
             }
         }
@@ -191,6 +188,73 @@ export class ScheduleService implements IScheduleService {
         }
         return result;
     }
+
+    async getSchedulesByDoctorForUser(doctorId: string, day?: DayOfWeek): Promise<any> {
+        const datas = await this.scheduleRepository.getScheduleByDoctor(doctorId, day);
+
+        const result = {
+            MONDAY: [],
+            TUESDAY: [],
+            WEDNESDAY: [],
+            THURSDAY: [],
+            FRIDAY: [],
+            SATURDAY: [],
+            SUNDAY: []
+        };
+
+        for (const data of datas) {
+            if (data.calender.day === DayOfWeek.MONDAY) {
+                result.MONDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.TUESDAY) {
+                result.TUESDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.WEDNESDAY) {
+                result.WEDNESDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.THURSDAY) {
+                result.THURSDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.FRIDAY) {
+                result.FRIDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.SATURDAY) {
+                result.SATURDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+
+            if (data.calender.day === DayOfWeek.SUNDAY) {
+                result.SUNDAY.push({
+                    calenderId: data.calender.id,
+                    timeSlot: data.calender.timeslot.name
+                });
+            }
+        }
+        return result;
+    }
+
     async setBusy(id: string): Promise<void> {
         return await this.scheduleRepository.setBusy(id);
     }

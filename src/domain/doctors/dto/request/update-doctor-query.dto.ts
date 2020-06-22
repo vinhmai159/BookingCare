@@ -6,20 +6,20 @@ export class UpdateDoctorQueryDto {
     @Expose()
     @ApiProperty()
     @IsOptional()
-    fistName: string;
+    fistName?: string;
 
     @Expose()
     @ApiProperty()
     @IsOptional()
-    lastName: string;
+    lastName?: string;
 
     @Expose()
     @ApiProperty()
     @IsOptional()
-    description: string;
+    description?: string;
 
     @Expose()
     @ApiProperty()
     @IsOptional()
-    addressDetail: string;
+    addressDetail?: string;
 }

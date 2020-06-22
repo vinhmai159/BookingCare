@@ -53,4 +53,20 @@ export class ScheduleRepository extends Repository<Schedule> {
             .where('schedule.doctorId = :doctorId', { doctorId })
             .execute();
     }
+
+    async getScheduleByDoctorforUser(doctorId: string, day?: DayOfWeek): Promise<Schedule[]> {
+        const scheduleByDoctor = this.createQueryBuilder('schedule')
+            .andWhere('schedule.busy = :check', {check: 0})
+            .andWhere('schedule.doctorId LIKE :doctorId', { doctorId })
+            .leftJoinAndSelect('schedule.calender', 'calender')
+            .leftJoinAndSelect('calender.timeslot', 'timeslot');
+
+        if (day) {
+            scheduleByDoctor.andWhere('calender.day = :day', { day });
+        }
+
+        scheduleByDoctor.orderBy('calender.day', 'ASC').addOrderBy('timeslot.name', 'ASC');
+
+        return await scheduleByDoctor.getMany();
+    }
 }
