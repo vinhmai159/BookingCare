@@ -70,7 +70,7 @@ export class DoctorController {
     })
     @Post()
     async getDoctors(@Body() dto: GetDoctorQueryDto): Promise<Doctor[]> {
-        return await this.doctorService.getDoctors(dto.name);
+        return await this.doctorService.getDoctors(dto.name, dto.expertise);
     }
 
     @ApiBearerAuth()

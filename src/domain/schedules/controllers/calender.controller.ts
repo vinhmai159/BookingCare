@@ -1,5 +1,5 @@
 import {CalenderService} from '../services';
-import {Controller, Inject, Post, Body, Get, Query, Param} from '@nestjs/common';
+import { Controller, Inject, Post, Body, Get, Query, Param, Put, Delete } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CalenderServiceToken } from '../constants';
 import {
@@ -30,17 +30,17 @@ export class CalenderController {
         return await this.calenderService.getCalender(dto.day, dto.timeSlotName);
     }
 
-    @Post('/:id')
+    @Get('/:id')
     async getCalenderById(@Param() dto : CalenderIdParamDto): Promise<Calender> {
         return await this.calenderService.getCalenderById(dto.id);
     }
 
-    @Post('delete/:id')
+    @Delete('delete/:id')
     async deleteCalender(@Body() dto : CalenderIdParamDto): Promise<DeleteResult> {
         return await this.calenderService.deleteCalender(dto.id);
     }
 
-    @Post('update/:id')
+    @Put('update/:id')
     async updateCalender(@Body() dto : UpdateCalenderBodyDto): Promise<Calender> {
         return await this.calenderService.updateCalender(dto);
     }

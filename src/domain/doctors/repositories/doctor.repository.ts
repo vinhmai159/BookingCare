@@ -5,8 +5,8 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 @EntityRepository(Doctor)
 export class DoctorRepository extends Repository<Doctor> {
-    async getDoctors(name: string): Promise<Doctor[]> {
-        const doctor = this.createQueryBuilder('doctor');
+    async getDoctors(name?: string, expertise?: string): Promise<Doctor[]> {
+        const doctor = this.createQueryBuilder('doctor').leftJoinAndSelect('doctor.expertise', 'expertise');
 
         if (name) {
             doctor.andWhere('doctor.fistName LIKE :name OR doctor.lastName LIKE :name', {
@@ -14,11 +14,11 @@ export class DoctorRepository extends Repository<Doctor> {
             });
         }
 
-        // if (expertise) {
-        //     doctor.andWhere(':expertise IN SELECT doctor.expertises', {
-        //         name: `%${name}%`
-        //     });
-        // }
+        if (expertise) {
+            doctor.andWhere('expertise.name LIKE :expertise', {
+                expertise: `%${expertise}%`
+            });
+        }
 
         return await doctor.getMany();
     }
@@ -52,7 +52,8 @@ export class DoctorRepository extends Repository<Doctor> {
         doc.lastName = doctor.lastName;
         // doc.avatar = doctor.avat
         doc.description = doctor.description;
-        doc.addressDetail = doc.addressDetail;
+        doc.addressDetail = doctor.addressDetail;
+        doc.expertise = doctor.expertiseId;
         return this.save(doc);
     }
 
