@@ -16,6 +16,6 @@ async function bootstrap() {
 
   DocumentationModule.load(app);
 
-  await app.listen(3069);
+  await app.listen(process.env.PORT || 3069);
 }
 bootstrap();
