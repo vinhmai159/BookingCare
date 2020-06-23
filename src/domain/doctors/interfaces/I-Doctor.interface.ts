@@ -7,7 +7,7 @@ export interface IDoctorService {
 
     getDoctorById(id: string): Promise<Doctor>;
 
-    getDoctors(name: string): Promise<Doctor[]>;
+    getDoctors(name?: string, expertise?: string): Promise<Doctor[]>;
 
     deleteDoctor(id: string): Promise<DeleteResult>;
 

@@ -1,4 +1,4 @@
-import { Controller, Inject, Post, HttpStatus, HttpCode, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Inject, Post, HttpStatus, HttpCode, Body, Param, UseGuards, Delete, Put, Get } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { IUserService } from '../interfaces';
 import { UserServiceToken } from '../contants';
@@ -66,7 +66,7 @@ export class UserController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
-    @Post('/:id')
+    @Get('/:id')
     public async getUserById(@jwt() user: User, @Param() paramDto: IdUserParamDto): Promise<User> {
         if (!isNullOrUndefined(user)) {
             paramDto.id = user.id;
@@ -83,7 +83,7 @@ export class UserController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
-    @Post('/:id/update')
+    @Put('/:id/update')
     public async updateUser(
         @jwt() user: User,
         @Param() paramDto: IdUserParamDto,
@@ -104,7 +104,7 @@ export class UserController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
-    @Post('/:id/delete')
+    @Delete('/:id/delete')
     public async deleteUser(@jwt() user: User, @Param() paramDto: IdUserParamDto): Promise<DeleteResult> {
         if (!isNullOrUndefined(user)) {
             paramDto.id = user.id;
@@ -114,7 +114,7 @@ export class UserController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @Post('/:id/booking-schedule')
+    @Post('/booking-schedule')
     public async bookingSchedule(@jwt() user: User, @Body() bodyDto: BookingScheduleBodyDto): Promise<Schedule> {
         const data = await this.userService.bookingSchedule(user.id, bodyDto.scheduleId);
         return data;

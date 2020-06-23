@@ -25,8 +25,8 @@ export class DoctorService implements IDoctorService {
         const doctor =  await this.doctorRepository.getDoctorById(id);
         return doctor;
     }
-    async getDoctors(name: string): Promise<Doctor[]> {
-        const doctor = await this.doctorRepository.getDoctors(name);
+    async getDoctors(name?: string, expertise?: string): Promise<Doctor[]> {
+        const doctor = await this.doctorRepository.getDoctors(name, expertise);
         return doctor;
     }
     async deleteDoctor(id: string): Promise<DeleteResult> {
