@@ -22,4 +22,9 @@ export class UpdateDoctorQueryDto {
     @ApiProperty()
     @IsOptional()
     addressDetail?: string;
+
+    @Expose()
+    @ApiProperty()
+    @IsOptional()
+    expertiseId?: string;
 }

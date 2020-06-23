@@ -1,4 +1,4 @@
-import { Controller, Inject, HttpStatus, Post, Body, Param } from '@nestjs/common';
+import { Controller, Inject, HttpStatus, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import {IExpertiseService} from '../interfaces';
 import {ExpertiseServiceToken} from '../contants';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
@@ -37,7 +37,7 @@ export class ExpertiseController {
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
-    @Post('/:id/delete')
+    @Delete('/:id/delete')
     async deleteExpertise(@Param() paramDto: IdExpertiseParamDto): Promise<DeleteResult> {
         return await this.expertiseService.deleteExpertise(paramDto.id);
     }
@@ -46,7 +46,7 @@ export class ExpertiseController {
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
-    @Post('/:id/update')
+    @Put('/:id/update')
     async updateExpertise(@Param() paramDto: IdExpertiseParamDto, @Body() bodyDto: CreateExpertiseBodyDto): Promise<Expertise> {
         return await this.expertiseService.upateExpertise(paramDto.id, bodyDto.name);
     }

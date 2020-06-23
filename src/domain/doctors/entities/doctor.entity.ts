@@ -1,11 +1,9 @@
 import {
-  BaseEntity,
   PrimaryColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
-  ObjectIdColumn,
   Entity,
   JoinColumn,
 } from 'typeorm';
@@ -44,7 +42,7 @@ export class Doctor {
 
   @OneToOne(() => Expertise)
   @JoinColumn()
-  expertises: Expertise[];
+  expertise: Expertise;
 
   @CreateDateColumn({ type: 'timestamp' })
   public createAt: Date;
