@@ -120,6 +120,8 @@ export class ScheduleService implements IScheduleService {
     }
 
     private async deleteAllScheduleByDoctor(doctorId: string): Promise<DeleteResult> {
+
+
         return await this.scheduleRepository.deleteAllScheduleByDoctor(doctorId);
     }
 
@@ -169,6 +171,9 @@ export class ScheduleService implements IScheduleService {
                 });
             }
 
+
+
+            
             if (data.calender.day === DayOfWeek.THURSDAY) {
                 result.THURSDAY.push({
                     scheduleId: data.id,
