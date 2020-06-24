@@ -1,2 +1,1 @@
-web: yarn build
-web: node dist/main/main.js
+web: node --experimental-modules dist/main/main.js
