@@ -36,7 +36,7 @@ const serviceProviders = [
             Schedule,
             ScheduleRepository,
             Doctor,
-            DoctorRepository
+            DoctorRepository,
         ])
     ],
     controllers: [TimeSlotController, CalenderController, ScheduleController],
