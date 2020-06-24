@@ -8,8 +8,15 @@ import {
   UserModule,
   ExpertiseModule,
   AdminModule,
+  Doctor,
+  Schedule,
+  TimeSlot,
+  User,
+  Admin,
+  Expertise,
 } from '../domain';
 import {LoggingInterceptor, ErrorInterceptor} from '../common';
+import { Calender } from '../domain/schedules/entities/calender.entity';
 
 
 @Module({
@@ -21,8 +28,8 @@ import {LoggingInterceptor, ErrorInterceptor} from '../common';
       host: 'un0jueuv2mam78uv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
       port: 3306,
       database: 'fldp0ibaovxicq3r',
-      // entities: [Doctor],
-      entities: [__dirname + '/../../**/*.entity.{js,ts}'],
+      entities: [Doctor, Calender, Schedule, TimeSlot, User, Admin, Expertise],
+      // entities: [__dirname + '/../../**/*.entity.{js,ts}'],
       synchronize: true,
       logging: true
     }),
