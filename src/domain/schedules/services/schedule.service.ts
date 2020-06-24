@@ -126,6 +126,7 @@ export class ScheduleService implements IScheduleService {
     async getSchedulesByDoctor(doctorId: string, day?: DayOfWeek): Promise<any> {
         const datas = await this.scheduleRepository.getScheduleByDoctor(doctorId, day);
 
+        
         const result = {
             MONDAY: [],
             TUESDAY: [],
