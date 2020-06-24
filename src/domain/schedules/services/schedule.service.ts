@@ -139,6 +139,7 @@ export class ScheduleService implements IScheduleService {
         for (const data of datas) {
             if (data.calender.day === DayOfWeek.MONDAY) {
                 result.MONDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -146,6 +147,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.TUESDAY) {
                 result.TUESDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -153,6 +155,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.WEDNESDAY) {
                 result.WEDNESDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -160,6 +163,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.THURSDAY) {
                 result.THURSDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -167,6 +171,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.FRIDAY) {
                 result.FRIDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -174,6 +179,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.SATURDAY) {
                 result.SATURDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -181,6 +187,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.SUNDAY) {
                 result.SUNDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -205,6 +212,7 @@ export class ScheduleService implements IScheduleService {
         for (const data of datas) {
             if (data.calender.day === DayOfWeek.MONDAY) {
                 result.MONDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -212,6 +220,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.TUESDAY) {
                 result.TUESDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -219,6 +228,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.WEDNESDAY) {
                 result.WEDNESDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -226,6 +236,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.THURSDAY) {
                 result.THURSDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -233,6 +244,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.FRIDAY) {
                 result.FRIDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -240,6 +252,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.SATURDAY) {
                 result.SATURDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -247,6 +260,7 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.SUNDAY) {
                 result.SUNDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
