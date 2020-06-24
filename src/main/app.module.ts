@@ -16,11 +16,11 @@ import {LoggingInterceptor, ErrorInterceptor} from '../common';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      username: 'b6bc348d96cbe6',
-      password: 'a0da6a7d',
-      host: 'us-cdbr-east-05.cleardb.net',
+      username: 'bbdfg5cw2f98vgj9',
+      password: 'v3z225u0dmatpsxl',
+      host: 'un0jueuv2mam78uv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
       port: 3306,
-      database: 'heroku_61091f0781ef19e',
+      database: 'fldp0ibaovxicq3r',
       // entities: [Doctor],
       entities: [__dirname + '/../../**/*.entity.{js,ts}'],
       synchronize: true,
