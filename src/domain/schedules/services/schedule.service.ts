@@ -170,9 +170,6 @@ export class ScheduleService implements IScheduleService {
                     timeSlot: data.calender.timeslot.name
                 });
             }
-
-
-
             
             if (data.calender.day === DayOfWeek.THURSDAY) {
                 result.THURSDAY.push({
