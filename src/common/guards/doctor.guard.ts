@@ -11,11 +11,11 @@ export class DoctorGuard implements CanActivate {
         if (token) {
             const doctor = await this.validateToken(token);
             // tslint:disable-next-line: no-conditional-assignment
-            if (doctor.role = 'doctor') {
-                request.user = doctor;
+            if (doctor.role !== 'doctor') {
+                throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
             }
 
-            throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            request.user = doctor;
         } else {
             throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
         }

@@ -40,4 +40,12 @@ export class CalenderRepository extends Repository<Calender>{
                             .where('calender.id LIKE :id', {id})
                             .execute();
     }
+
+    public async deleteCalenderByTimeSlot(timeSlotId: string): Promise<DeleteResult> {
+        return await this.createQueryBuilder('calender')
+            .delete()
+            .from(Calender)
+            .where('calender.timeslotId = :timeSlotId', {timeSlotId})
+            .execute();
+    }
 }

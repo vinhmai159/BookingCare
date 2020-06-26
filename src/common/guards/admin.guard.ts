@@ -11,11 +11,11 @@ export class AdminGuard implements CanActivate {
         if (token) {
             const admin = await this.validateToken(token);
             // tslint:disable-next-line: no-conditional-assignment
-            if (admin.role = 'admin') {
-                request.user = admin;
+            if (admin.role !== 'admin') {
+                throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
             }
 
-            throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            request.user = admin;
         } else {
             throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
         }

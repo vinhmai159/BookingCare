@@ -31,9 +31,42 @@ export class UserService implements IUserService {
         return [data, count];
     }
 
-    public async getUserById(id: string): Promise<User> {
-        const data = await this.userRepository.getUserById(id);
-        return data;
+    public async getUserById(userId: string): Promise<any> {
+        const data = await this.userRepository.getUserById(userId);
+
+        const day = data.schedule.calender.day;
+        const timeSlot = data.schedule.calender.timeslot.name;
+        const schedule = {
+            day,
+            timeSlot
+        }
+        const {
+            id,
+            email,
+            fistName,
+            lastName,
+            birthday,
+            address,
+            gender,
+        } = data
+
+        const {
+            doctor
+        } = data.schedule;
+
+        const result = {
+            id,
+            email,
+            fistName,
+            lastName,
+            birthday,
+            address,
+            gender,
+            doctor,
+            schedule
+        }
+
+        return result;
     }
 
     public async updateUser(id: string, user: User): Promise<User> {
