@@ -78,8 +78,6 @@ export class DoctorController {
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
-    @ApiBearerAuth()
-    @UseGuards(AdminGuard)
     @Post()
     async getDoctors(@Body() dto: GetDoctorQueryDto): Promise<Doctor[]> {
         return await this.doctorService.getDoctors(dto.name, dto.expertise);

@@ -12,5 +12,5 @@ export interface ICalenderService {
 
     deleteCalender(id: string): Promise<DeleteResult>;
 
-    updateCalender(calenderDto: UpdateCalenderBodyDto): Calender | Promise<Calender>;
+    updateCalender(id: string, calenderDto: UpdateCalenderBodyDto): Calender | Promise<Calender>;
 }

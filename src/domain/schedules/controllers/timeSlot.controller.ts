@@ -39,7 +39,7 @@ export class TimeSlotController {
     }
 
     @Put('update/:id')
-    async updateTimeSlot(@Body() dto: UpdateTimeSlotQueryDto): Promise<TimeSlot> {
-        return await this.timeSlotService.updateTimeSlot(plainToClass(TimeSlot, dto));
+    async updateTimeSlot(@Param() paramDto: TimeSlotIdParamDto, @Body() bodyDto: UpdateTimeSlotQueryDto): Promise<TimeSlot> {
+        return await this.timeSlotService.updateTimeSlot(paramDto.id, bodyDto);
     }
 }

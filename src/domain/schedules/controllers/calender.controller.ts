@@ -24,7 +24,7 @@ export class CalenderController {
     }
 
     @Post()
-    async getCalender(@Body() dto: SearchCalenderBodyDto): Promise<Calender[]> {
+    async getCalender(@Body() dto?: SearchCalenderBodyDto): Promise<Calender[]> {
         return await this.calenderService.getCalender(dto.day, dto.timeSlotName);
     }
 
@@ -34,12 +34,12 @@ export class CalenderController {
     }
 
     @Delete('delete/:id')
-    async deleteCalender(@Body() dto: CalenderIdParamDto): Promise<DeleteResult> {
+    async deleteCalender(@Param() dto: CalenderIdParamDto): Promise<DeleteResult> {
         return await this.calenderService.deleteCalender(dto.id);
     }
 
     @Put('update/:id')
-    async updateCalender(@Body() dto: UpdateCalenderBodyDto): Promise<Calender> {
-        return await this.calenderService.updateCalender(dto);
+    async updateCalender(@Param() paramDto: CalenderIdParamDto, @Body() bodyDto: UpdateCalenderBodyDto): Promise<Calender> {
+        return await this.calenderService.updateCalender(paramDto.id, bodyDto);
     }
 }
