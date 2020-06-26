@@ -10,8 +10,6 @@ import { AdminGuard } from '../../../common';
 
 @ApiTags('expertise')
 @Controller('expertise')
-@ApiBearerAuth()
-@UseGuards(AdminGuard)
 export class ExpertiseController {
     constructor(
         @Inject(ExpertiseServiceToken)
@@ -22,6 +20,8 @@ export class ExpertiseController {
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Post('create')
     async createExpertise(@Body() bodyDto: CreateExpertiseBodyDto): Promise<Expertise> {
         return await this.expertiseService.createExpertise(plainToClass(Expertise, bodyDto));
@@ -40,6 +40,8 @@ export class ExpertiseController {
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Delete('/:id/delete')
     async deleteExpertise(@Param() paramDto: IdExpertiseParamDto): Promise<DeleteResult> {
         return await this.expertiseService.deleteExpertise(paramDto.id);
@@ -50,6 +52,8 @@ export class ExpertiseController {
         description: 'The request is successfully.'
     })
     @Put('/:id/update')
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     async updateExpertise(
         @Param() paramDto: IdExpertiseParamDto,
         @Body() bodyDto: CreateExpertiseBodyDto

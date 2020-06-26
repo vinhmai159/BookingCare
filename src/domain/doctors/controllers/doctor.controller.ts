@@ -102,7 +102,7 @@ export class DoctorController {
 
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
-    @Delete(':/id/delete')
+    @Delete('/:id/delete')
     async deleteDoctor(@Param() dto: IdDoctorParamDto): Promise<DeleteResult> {
         return await this.doctorService.deleteDoctor(dto.id);
     }

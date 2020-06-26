@@ -1,19 +1,13 @@
-import { Injectable, Inject, BadRequestException, ExceptionFilter, ConflictException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { IScheduleService, ICalenderService } from '../interfaces';
 import { ScheduleRepository } from '../repositories';
 import { Schedule } from '../entities';
-import { DoctorService } from '../../doctors';
-import { CalenderService } from './calender.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Doctor } from '../../doctors/entities/doctor.entity';
-import { Calender } from '../entities/calender.entity';
 import { DayOfWeek, CalenderServiceToken } from '../constants';
-import { IDoctorService } from '../../doctors/interfaces';
-import { DoctorServiceToken } from '../../doctors/constants';
 import { DoctorRepository } from '../../doctors/repositories';
 import { v4 as uuid } from 'uuid';
 import { DeleteResult } from 'typeorm';
-import { ScheduleByDoctor } from '../dto';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
@@ -99,8 +93,8 @@ export class ScheduleService implements IScheduleService {
 
     async deleteSchedulesBydoctor(doctorId: string, calenderIds: string[]): Promise<any> {
         let count = 0;
-        let deletedId = [];
-        let error = [];
+        const deletedId = [];
+        const error = [];
         for (const element of calenderIds) {
             try {
                 const scheduleDelete = await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, element);
@@ -122,6 +116,8 @@ export class ScheduleService implements IScheduleService {
     }
 
     private async deleteAllScheduleByDoctor(doctorId: string): Promise<DeleteResult> {
+
+
         return await this.scheduleRepository.deleteAllScheduleByDoctor(doctorId);
     }
 
@@ -139,6 +135,8 @@ export class ScheduleService implements IScheduleService {
         };
 
         for (const data of datas) {
+
+
             if (data.calender.day === DayOfWeek.MONDAY) {
                 result.MONDAY.push({
                     scheduleId: data.id,
