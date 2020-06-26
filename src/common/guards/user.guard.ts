@@ -10,12 +10,12 @@ export class UserGuard implements CanActivate {
 
         if (token) {
             const user = await this.validateToken(token);
-            // tslint:disable-next-line: no-conditional-assignment
-            if (user.role = 'user') {
-                request.user = user;
+
+            if (user.role !== 'user') {
+                throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
             }
 
-            throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            request.user = user;
         } else {
             throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
         }

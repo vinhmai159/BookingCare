@@ -34,7 +34,7 @@ export class TimeSlotController {
     }
 
     @Delete('delete/:id')
-    async deleteTimeSlot(@Body() dto: TimeSlotIdParamDto): Promise<DeleteResult> {
+    async deleteTimeSlot(@Param() dto: TimeSlotIdParamDto): Promise<DeleteResult> {
         return await this.timeSlotService.deleteTimeSlot(dto.id);
     }
 
