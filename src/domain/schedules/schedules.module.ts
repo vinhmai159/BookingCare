@@ -8,8 +8,10 @@ import { TimeSlotController, CalenderController, ScheduleController } from './co
 import { DoctorService } from '../doctors/services/doctor.service';
 import { IDoctorService } from '../doctors/interfaces/I-Doctor.interface';
 import { Doctor } from '../doctors/entities/doctor.entity';
-import {DoctorServiceToken} from '../doctors/constants';
+import { DoctorServiceToken } from '../doctors/constants';
 import { DoctorRepository } from '../doctors/repositories/doctor.repository';
+import { ScheduleCommandHandlers } from './queries/handle';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const serviceProviders = [
     {
@@ -36,11 +38,12 @@ const serviceProviders = [
             Schedule,
             ScheduleRepository,
             Doctor,
-            DoctorRepository,
-        ])
+            DoctorRepository
+        ]),
+        CqrsModule
     ],
     controllers: [TimeSlotController, CalenderController, ScheduleController],
-    providers: [...serviceProviders, DoctorRepository],
+    providers: [...serviceProviders, ...ScheduleCommandHandlers],
     exports: [...serviceProviders]
 })
 export class SchedulesModule {}

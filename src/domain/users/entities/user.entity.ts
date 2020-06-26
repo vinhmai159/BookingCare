@@ -2,6 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, BeforeInsert, OneToOne
 import { Expose } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { Schedule } from '../../schedules';
+import { scheduled } from 'rxjs';
 
 @Entity('users')
 export class User {
@@ -33,7 +34,10 @@ export class User {
     @Column()
     gender: string;
 
-    @OneToOne(() => Schedule)
+    @OneToOne(
+        () => Schedule,
+        schedule => schedule.user
+    )
     @JoinColumn()
     schedule: Schedule;
 
