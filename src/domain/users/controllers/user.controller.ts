@@ -57,7 +57,7 @@ export class UserController {
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
     @Post()
-    public async getUsers(@Body() bodydto: GetUserBodyDto): Promise<any> {
+    public async getUsers(@Body() bodydto?: GetUserBodyDto): Promise<any> {
         const [data, count] = await this.userService.getUsers(bodydto.name, bodydto.email, bodydto.address);
         return { data, count };
     }
@@ -133,10 +133,7 @@ export class UserController {
     @UseGuards(AdminGuard)
     @HttpCode(HttpStatus.OK)
     @Delete('/:id/delete')
-    public async deleteUser(@jwt() user: User, @Param() paramDto: IdUserParamDto): Promise<DeleteResult> {
-        if (!isNullOrUndefined(user)) {
-            paramDto.id = user.id;
-        }
+    public async deleteUser(@Param() paramDto: IdUserParamDto): Promise<DeleteResult> {
         return await this.userService.deleteUser(paramDto.id);
     }
 

@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {ITimeSlotService} from '../interfaces';
+import {UpdateTimeSlotQueryDto} from '../dto';
 
 @Injectable()
 export class TimeslotService implements ITimeSlotService {
@@ -36,8 +37,8 @@ export class TimeslotService implements ITimeSlotService {
     }
 
 
-    async updateTimeSlot(timeSlot: TimeSlot): Promise<TimeSlot> {
-        const timeSlotWillUpdate = await this.timeslotRepository.getTimeSlotById(timeSlot.id);
+    async updateTimeSlot(id: string, timeSlot: UpdateTimeSlotQueryDto): Promise<TimeSlot> {
+        const timeSlotWillUpdate = await this.timeslotRepository.getTimeSlotById(id);
         timeSlotWillUpdate.name = timeSlot.name;
         return await this.timeslotRepository.saveTimeSlot(timeSlotWillUpdate);
     }
