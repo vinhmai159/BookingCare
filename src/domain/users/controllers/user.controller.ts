@@ -14,7 +14,7 @@ import {
 } from '../dto';
 import { plainToClass } from 'class-transformer';
 import { Schedule } from '../../schedules';
-import { AuthGuard, jwt } from '../../../common';
+import { UserGuard, jwt, AdminGuard } from '../../../common';
 import { isNullOrUndefined } from 'util'
 
 @Controller('user')
@@ -40,6 +40,8 @@ export class UserController {
         description: 'Create one user is successfully'
     })
     @HttpCode(HttpStatus.OK)
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Post('create')
     public async createUser(@Body() bodyDto: CreateUserBodyDto): Promise<User> {
         const user = await this.userService.createUser(plainToClass(User, bodyDto));
@@ -52,6 +54,8 @@ export class UserController {
         description: 'Get users is successfully'
     })
     @HttpCode(HttpStatus.OK)
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Post()
     public async getUsers(@Body() bodydto: GetUserBodyDto): Promise<any> {
         const [data, count] = await this.userService.getUsers(bodydto.name, bodydto.email, bodydto.address);
@@ -64,13 +68,24 @@ export class UserController {
         description: 'Get a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(UserGuard)
     @HttpCode(HttpStatus.OK)
-    @Get('/:id')
-    public async getUserById(@jwt() user: User, @Param() paramDto: IdUserParamDto): Promise<User> {
-        if (!isNullOrUndefined(user)) {
-            paramDto.id = user.id;
-        }
+    @Get('get-user-by-id')
+    public async getUserById(@jwt() user: User): Promise<User> {
+        const exitUser = await this.userService.getUserById(user.id);
+        return exitUser;
+    }
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        // type: ,
+        description: 'Get a user is successfully'
+    })
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
+    @HttpCode(HttpStatus.OK)
+    @Get('/admin/:id/get-user-by-id')
+    public async getUserByIdForAdmin(@Param() paramDto: IdUserParamDto): Promise<User> {
         const exitUser = await this.userService.getUserById(paramDto.id);
         return exitUser;
     }
@@ -81,17 +96,30 @@ export class UserController {
         description: 'Update a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(UserGuard)
     @HttpCode(HttpStatus.OK)
     @Put('/:id/update')
     public async updateUser(
         @jwt() user: User,
+        @Body() bodyDto: UpdateUserBodyDto
+    ): Promise<User> {
+        const exitUser = await this.userService.updateUser(user.id, plainToClass(User, bodyDto));
+        return exitUser;
+    }
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        // type: ,
+        description: 'Update a user is successfully'
+    })
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
+    @HttpCode(HttpStatus.OK)
+    @Put('admin/:id/update')
+    public async updateUserForAdmin(
         @Param() paramDto: IdUserParamDto,
         @Body() bodyDto: UpdateUserBodyDto
     ): Promise<User> {
-        if (!isNullOrUndefined(user)) {
-            paramDto.id = user.id;
-        }
         const exitUser = await this.userService.updateUser(paramDto.id, plainToClass(User, bodyDto));
         return exitUser;
     }
@@ -102,7 +130,7 @@ export class UserController {
         description: 'Delete a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(AdminGuard)
     @HttpCode(HttpStatus.OK)
     @Delete('/:id/delete')
     public async deleteUser(@jwt() user: User, @Param() paramDto: IdUserParamDto): Promise<DeleteResult> {
@@ -113,7 +141,7 @@ export class UserController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(UserGuard)
     @Post('/booking-schedule')
     public async bookingSchedule(@jwt() user: User, @Body() bodyDto: BookingScheduleBodyDto): Promise<Schedule> {
         const data = await this.userService.bookingSchedule(user.id, bodyDto.scheduleId);

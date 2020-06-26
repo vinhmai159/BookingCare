@@ -1,9 +1,9 @@
-import {BadRequestException} from '@nestjs/common';
-import {IQueryHandler, QueryHandler} from '@nestjs/cqrs';
-import {InjectRepository} from '@nestjs/typeorm';
+import { QueryHandler, ICommandHandler, IQueryHandler } from '@nestjs/cqrs';
+import { GetScheduleByIdQuery } from '../impl';
+import { ScheduleRepository } from '../../repositories';
+import { BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import {Schedule} from 'domain/schedules/entities';
-import {ScheduleRepository} from '../../repositories';
-import {GetScheduleByIdQuery} from '../impl';
 
 @QueryHandler(GetScheduleByIdQuery)
 export class GetScheduleByIdHandler implements IQueryHandler<GetScheduleByIdQuery> {

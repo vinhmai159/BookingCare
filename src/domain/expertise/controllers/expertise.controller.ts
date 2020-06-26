@@ -6,12 +6,12 @@ import { Expertise } from '../entities';
 import { CreateExpertiseBodyDto, GetExpertiseBodyDto, IdExpertiseParamDto } from '../dto';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AuthGuard } from '../../../common';
+import { AdminGuard } from '../../../common';
 
 @ApiTags('expertise')
 @Controller('expertise')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AdminGuard)
 export class ExpertiseController {
     constructor(
         @Inject(ExpertiseServiceToken)

@@ -6,12 +6,12 @@ import { CalenderIdParamDto, SaveCalenderDataDto, UpdateCalenderBodyDto, SearchC
 import { Calender } from '../entities';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AuthGuard } from '../../../common';
+import { AdminGuard } from '../../../common';
 
 @ApiTags('calender')
 @Controller('calender')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AdminGuard)
 export class CalenderController {
     constructor(
         @Inject(CalenderServiceToken)

@@ -29,9 +29,8 @@ import { plainToClass } from 'class-transformer';
 import { Doctor } from '../entities';
 import { DeleteResult } from 'typeorm';
 import { DoctorServiceToken } from '../constants';
-import { AuthGuard, jwt } from '../../../common';
-import {generate} from 'rxjs';
-import {extname} from 'path';
+import { DoctorGuard, jwt, AdminGuard } from '../../../common';
+import { extname } from 'path';
 
 @ApiTags('doctor')
 @Controller('doctor')
@@ -54,47 +53,64 @@ export class DoctorController {
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Post('/create')
     async createDoctor(@Body() doctorDto: CreateDoctorQueryDto): Promise<Doctor> {
         return await this.doctorService.createDoctor(plainToClass(Doctor, doctorDto), null);
     }
 
-    @Get('/:id')
-    async getDoctorById(@Param() dto: IdDoctorParamDto): Promise<Doctor> {
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
+    @Get('/admin/:id')
+    async getDoctorByIdForAdmin(@Param() dto: IdDoctorParamDto): Promise<Doctor> {
         return await this.doctorService.getDoctorById(dto.id);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(DoctorGuard)
+    @Get('/:id')
+    async getDoctorById(@jwt() doctor: Doctor): Promise<Doctor> {
+        return await this.doctorService.getDoctorById(doctor.id);
     }
 
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Post()
     async getDoctors(@Body() dto: GetDoctorQueryDto): Promise<Doctor[]> {
         return await this.doctorService.getDoctors(dto.name, dto.expertise);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
-    @Put('/:id/update')
-    async updateDoctor(
-        @jwt() doctor: Doctor,
-        @Param() dto: IdDoctorParamDto,
-        @Body() updateDoctorDto: UpdateDoctorQueryDto
-    ): Promise<Doctor> {
-        (doctor)? dto.id = doctor.id : true;
-        return await this.doctorService.updateDoctor(dto.id, updateDoctorDto);
+    @UseGuards(DoctorGuard)
+    @Put('/update')
+    async updateDoctor(@jwt() doctor: Doctor, @Body() updateDoctorDto: UpdateDoctorQueryDto): Promise<Doctor> {
+        return await this.doctorService.updateDoctor(doctor.id, updateDoctorDto);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(AdminGuard)
+    @Put('/admin/:id/update')
+    async updateDoctorForAdmin(
+        @Param() paramDto: IdDoctorParamDto,
+        @Body() updateDoctorDto: UpdateDoctorQueryDto
+    ): Promise<Doctor> {
+        return await this.doctorService.updateDoctor(paramDto.id, updateDoctorDto);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Delete(':/id/delete')
-    async deleteDoctor(@jwt() doctor: Doctor, @Param() dto: IdDoctorParamDto): Promise<DeleteResult> {
+    async deleteDoctor(@Param() dto: IdDoctorParamDto): Promise<DeleteResult> {
         return await this.doctorService.deleteDoctor(dto.id);
     }
 
-
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(DoctorGuard)
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({
