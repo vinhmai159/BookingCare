@@ -5,10 +5,7 @@ import { TimeSlotRepository, CalenderRepository, ScheduleRepository } from './re
 import { TimeslotService, CalenderService, ScheduleService } from './services';
 import { TimeSlotServiceToken, CalenderServiceToken, ScheduleServiceToken } from './constants';
 import { TimeSlotController, CalenderController, ScheduleController } from './controllers';
-import { DoctorService } from '../doctors/services/doctor.service';
-import { IDoctorService } from '../doctors/interfaces/I-Doctor.interface';
 import { Doctor } from '../doctors/entities/doctor.entity';
-import { DoctorServiceToken } from '../doctors/constants';
 import { DoctorRepository } from '../doctors/repositories/doctor.repository';
 import { ScheduleCommandHandlers } from './queries/handle';
 import { CqrsModule } from '@nestjs/cqrs';
