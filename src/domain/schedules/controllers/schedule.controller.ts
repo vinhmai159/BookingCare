@@ -11,7 +11,7 @@ import {
 } from '../dto';
 import { ScheduleServiceToken } from '../constants';
 import { IScheduleService } from '../interfaces';
-import { AuthGuard, jwt } from '../../../common';
+import { DoctorGuard, jwt } from '../../../common';
 import { Doctor } from '../../doctors';
 import { DeleteResult } from 'typeorm';
 
@@ -24,14 +24,14 @@ export class ScheduleController {
     ) {}
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(DoctorGuard)
     @Post('create-many')
     async createSchedules(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<Schedule[]> {
         return await this.scheduleService.createSchedule(doctor, dto.calenderIds);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(DoctorGuard)
     @Post('create-one')
     async createSchedule(@jwt() doctor: Doctor, @Body() dto: CreateOneSchedulesQueryDto): Promise<Schedule> {
         return await this.scheduleService.createOneSchedule(doctor, dto.calenderId);
@@ -43,7 +43,7 @@ export class ScheduleController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(DoctorGuard)
     @Get('/get-schedule-for-doctor')
     async getScheduleByDoctor(@jwt() doctor: Doctor): Promise<ScheduleByDoctor[]> {
         return await this.scheduleService.getSchedulesByDoctor(doctor.id);
@@ -57,14 +57,14 @@ export class ScheduleController {
     // }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(DoctorGuard)
     @Delete('delete/:doctorId/:calenderIds')
     async deleteSchedules(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<DeleteResult> {
         return await this.scheduleService.deleteSchedulesBydoctor(doctor.id, dto.calenderIds);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+    @UseGuards(DoctorGuard)
     @Put('update/:doctorId/:calenderIds')
     async updateSchedulesByDoctor(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<Schedule[]> {
         return await this.scheduleService.updateSchedulesforDoctor(doctor, dto.calenderIds);

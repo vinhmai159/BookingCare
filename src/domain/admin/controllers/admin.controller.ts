@@ -6,12 +6,12 @@ import { AdminBodyDto, AdminLogInDto, IdAdminParamDto, CreateAdminBodyDto } from
 import { Admin } from '../entities';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AuthGuard } from '../../../common';
+import { DoctorGuard } from '../../../common';
 
 @Controller('api/admin')
 @ApiTags('Admin')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(DoctorGuard)
 export class AdminController {
     constructor(
         @Inject(AdminServiceToken)

@@ -106,6 +106,7 @@ export class UserService implements IUserService {
         const user = await this.userRepository.getUserByEmail(email);
         if (user && (await this.validatePassword(password, user.password))) {
             const { id, email, address, gender, birthday, fistName, lastName, schedule, createAt, updateAt } = user;
+            const role = 'user';
             const payload = {
                 id,
                 email,
@@ -115,6 +116,7 @@ export class UserService implements IUserService {
                 fistName,
                 lastName,
                 schedule,
+                role,
                 createAt,
                 updateAt
             };
