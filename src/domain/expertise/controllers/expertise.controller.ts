@@ -1,16 +1,19 @@
-import { Controller, Inject, HttpStatus, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import {IExpertiseService} from '../interfaces';
-import {ExpertiseServiceToken} from '../contants';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import {Expertise} from '../entities';
-import {CreateExpertiseBodyDto, GetExpertiseBodyDto, IdExpertiseParamDto} from '../dto';
+import { Controller, Inject, HttpStatus, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { IExpertiseService } from '../interfaces';
+import { ExpertiseServiceToken } from '../contants';
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Expertise } from '../entities';
+import { CreateExpertiseBodyDto, GetExpertiseBodyDto, IdExpertiseParamDto } from '../dto';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
+import { AuthGuard } from '../../../common';
 
 @ApiTags('expertise')
 @Controller('expertise')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class ExpertiseController {
-    constructor (
+    constructor(
         @Inject(ExpertiseServiceToken)
         private readonly expertiseService: IExpertiseService
     ) {}
@@ -47,7 +50,10 @@ export class ExpertiseController {
         description: 'The request is successfully.'
     })
     @Put('/:id/update')
-    async updateExpertise(@Param() paramDto: IdExpertiseParamDto, @Body() bodyDto: CreateExpertiseBodyDto): Promise<Expertise> {
+    async updateExpertise(
+        @Param() paramDto: IdExpertiseParamDto,
+        @Body() bodyDto: CreateExpertiseBodyDto
+    ): Promise<Expertise> {
         return await this.expertiseService.upateExpertise(paramDto.id, bodyDto.name);
     }
 }

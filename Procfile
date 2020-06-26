@@ -1,0 +1,1 @@
+web: node --experimental-modules dist/main/main.js
