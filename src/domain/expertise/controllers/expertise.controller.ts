@@ -51,9 +51,9 @@ export class ExpertiseController {
         status: HttpStatus.OK,
         description: 'The request is successfully.'
     })
-    @Put('/:id/update')
     @ApiBearerAuth()
     @UseGuards(AdminGuard)
+    @Put('/:id/update')
     async updateExpertise(
         @Param() paramDto: IdExpertiseParamDto,
         @Body() bodyDto: CreateExpertiseBodyDto
