@@ -1,19 +1,13 @@
-import { Injectable, Inject, BadRequestException, ExceptionFilter, ConflictException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { IScheduleService, ICalenderService } from '../interfaces';
 import { ScheduleRepository } from '../repositories';
 import { Schedule } from '../entities';
-import { DoctorService } from '../../doctors';
-import { CalenderService } from './calender.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Doctor } from '../../doctors/entities/doctor.entity';
-import { Calender } from '../entities/calender.entity';
 import { DayOfWeek, CalenderServiceToken } from '../constants';
-import { IDoctorService } from '../../doctors/interfaces';
-import { DoctorServiceToken } from '../../doctors/constants';
 import { DoctorRepository } from '../../doctors/repositories';
 import { v4 as uuid } from 'uuid';
 import { DeleteResult } from 'typeorm';
-import { ScheduleByDoctor } from '../dto';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
@@ -53,7 +47,7 @@ export class ScheduleService implements IScheduleService {
         for (const calenderId of calenderIds) {
             let check = 1;
             for (const exitCalenderId of exitCalenderIds) {
-                if ( calenderId === exitCalenderId) {
+                if (calenderId === exitCalenderId) {
                     check = 0;
                 }
             }
@@ -65,23 +59,25 @@ export class ScheduleService implements IScheduleService {
         for (const exitCalenderId of exitCalenderIds) {
             let check = 1;
             for (const calenderId of calenderIds) {
-                if ( exitCalenderId === calenderId ) {
+                if (exitCalenderId === calenderId) {
                     check = 0;
                 }
             }
             if (check) {
                 try {
                     await this.scheduleRepository.deleteSchedulesByDoctor(doctor.id, exitCalenderId);
-                } catch  {
+                } catch {
                     const exitCaldender = await this.calenderServide.getCalenderById(exitCalenderId);
-                    errors.push(`The schedule '${exitCaldender.day}: ${exitCaldender.timeslot.name}' can not delete, that is have been booking by a user.`)
+                    errors.push(
+                        `The schedule '${exitCaldender.day}: ${exitCaldender.timeslot.name}' can not delete, that is have been booking by a user.`
+                    );
                 }
             }
         }
 
         return {
             data: await this.getSchedulesByDoctor(doctor.id),
-            errors,
+            errors
         };
     }
 
@@ -97,8 +93,8 @@ export class ScheduleService implements IScheduleService {
 
     async deleteSchedulesBydoctor(doctorId: string, calenderIds: string[]): Promise<any> {
         let count = 0;
-        let deletedId = [];
-        let error = [];
+        const deletedId = [];
+        const error = [];
         for (const element of calenderIds) {
             try {
                 const scheduleDelete = await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, element);
@@ -120,6 +116,8 @@ export class ScheduleService implements IScheduleService {
     }
 
     private async deleteAllScheduleByDoctor(doctorId: string): Promise<DeleteResult> {
+
+
         return await this.scheduleRepository.deleteAllScheduleByDoctor(doctorId);
     }
 
@@ -137,8 +135,13 @@ export class ScheduleService implements IScheduleService {
         };
 
         for (const data of datas) {
+
+
             if (data.calender.day === DayOfWeek.MONDAY) {
                 result.MONDAY.push({
+                    scheduleId: data.id,
+                    busy: data.busy,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -146,6 +149,9 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.TUESDAY) {
                 result.TUESDAY.push({
+                    scheduleId: data.id,
+                    busy: data.busy,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -153,6 +159,9 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.WEDNESDAY) {
                 result.WEDNESDAY.push({
+                    scheduleId: data.id,
+                    busy: data.busy,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -160,6 +169,9 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.THURSDAY) {
                 result.THURSDAY.push({
+                    scheduleId: data.id,
+                    busy: data.busy,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -167,6 +179,9 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.FRIDAY) {
                 result.FRIDAY.push({
+                    scheduleId: data.id,
+                    busy: data.busy,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -174,6 +189,9 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.SATURDAY) {
                 result.SATURDAY.push({
+                    scheduleId: data.id,
+                    busy: data.busy,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -181,6 +199,9 @@ export class ScheduleService implements IScheduleService {
 
             if (data.calender.day === DayOfWeek.SUNDAY) {
                 result.SUNDAY.push({
+                    scheduleId: data.id,
+                    busy: data.busy,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -203,50 +224,57 @@ export class ScheduleService implements IScheduleService {
         };
 
         for (const data of datas) {
-            if (data.calender.day === DayOfWeek.MONDAY) {
+            if (data.calender.day === DayOfWeek.MONDAY && data.busy === false) {
                 result.MONDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
             }
 
-            if (data.calender.day === DayOfWeek.TUESDAY) {
+            if (data.calender.day === DayOfWeek.TUESDAY && data.busy === false) {
                 result.TUESDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
             }
 
-            if (data.calender.day === DayOfWeek.WEDNESDAY) {
+            if (data.calender.day === DayOfWeek.WEDNESDAY && data.busy === false) {
                 result.WEDNESDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
             }
 
-            if (data.calender.day === DayOfWeek.THURSDAY) {
+            if (data.calender.day === DayOfWeek.THURSDAY && data.busy === false) {
                 result.THURSDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
             }
 
-            if (data.calender.day === DayOfWeek.FRIDAY) {
+            if (data.calender.day === DayOfWeek.FRIDAY && data.busy === false) {
                 result.FRIDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
             }
 
-            if (data.calender.day === DayOfWeek.SATURDAY) {
+            if (data.calender.day === DayOfWeek.SATURDAY && data.busy === false) {
                 result.SATURDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
             }
 
-            if (data.calender.day === DayOfWeek.SUNDAY) {
+            if (data.calender.day === DayOfWeek.SUNDAY && data.busy === false) {
                 result.SUNDAY.push({
+                    scheduleId: data.id,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });

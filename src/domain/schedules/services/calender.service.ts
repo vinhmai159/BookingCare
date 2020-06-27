@@ -103,8 +103,8 @@ export class CalenderService implements ICalenderService {
         return await this.calenderRepository.deleteCalender(id);
     }
 
-    async updateCalender(calenderDto: UpdateCalenderBodyDto): Promise<Calender> {
-        const calenderWillUpdate = await this.calenderRepository.getCalenderById(calenderDto.id);
+    async updateCalender(id: string, calenderDto: UpdateCalenderBodyDto): Promise<Calender> {
+        const calenderWillUpdate = await this.calenderRepository.getCalenderById(id);
         calenderWillUpdate.day = calenderDto.day;
         calenderWillUpdate.timeslot = await this.timeslotRepository.getTimeSlotById(calenderDto.timeSlotId);
         return await this.calenderRepository.saveCalender(calenderWillUpdate);

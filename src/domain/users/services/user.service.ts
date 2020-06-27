@@ -1,24 +1,24 @@
-import { Injectable, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
 import { IUserService } from '../interfaces';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories';
 import { User } from '../entities';
 import { DeleteResult } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { Schedule } from '../../schedules/entities/schedule.entity';
-import { ScheduleRepository } from '../../schedules';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import * as Moment from 'moment';
+import {QueryBus} from '@nestjs/cqrs';
+import { GetScheduleByIdQuery, Schedule, SaveScheduleQuery } from '../../schedules';
 
 @Injectable()
 export class UserService implements IUserService {
     constructor(
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
-        @InjectRepository(ScheduleRepository)
-        private readonly scheduleRepository: ScheduleRepository,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly queryBus: QueryBus
+
     ) {}
 
     public async createUser(user: User): Promise<User> {
@@ -31,9 +31,42 @@ export class UserService implements IUserService {
         return [data, count];
     }
 
-    public async getUserById(id: string): Promise<User> {
-        const data = await this.userRepository.getUserById(id);
-        return data;
+    public async getUserById(userId: string): Promise<any> {
+        const data = await this.userRepository.getUserById(userId);
+
+        const day = data.schedule.calender.day;
+        const timeSlot = data.schedule.calender.timeslot.name;
+        const schedule = {
+            day,
+            timeSlot
+        }
+        const {
+            id,
+            email,
+            fistName,
+            lastName,
+            birthday,
+            address,
+            gender,
+        } = data
+
+        const {
+            doctor
+        } = data.schedule;
+
+        const result = {
+            id,
+            email,
+            fistName,
+            lastName,
+            birthday,
+            address,
+            gender,
+            doctor,
+            schedule
+        }
+
+        return result;
     }
 
     public async updateUser(id: string, user: User): Promise<User> {
@@ -73,7 +106,8 @@ export class UserService implements IUserService {
 
     public async bookingSchedule(id: string, scheduleId: string): Promise<Schedule> {
         const user = await this.userRepository.getUserById(id);
-        const schedule = await this.scheduleRepository.getScheduleById(scheduleId);
+        // dùng query bus qua bên Schedule đẻ lấy, k dc impỏt repossiroty ỏ ngoài domain của nó
+        const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(new GetScheduleByIdQuery(scheduleId));
 
         if (schedule.busy) {
             throw new BadRequestException('The schedule of doctor is busy');
@@ -97,7 +131,7 @@ export class UserService implements IUserService {
         user.schedule = schedule;
         await this.userRepository.saveUser(user);
         schedule.busy = true;
-        await this.scheduleRepository.createSchedule(schedule); // save
+        await this.queryBus.execute<SaveScheduleQuery, Schedule>(new SaveScheduleQuery(schedule)) // save
         return schedule;
     }
 
@@ -105,6 +139,7 @@ export class UserService implements IUserService {
         const user = await this.userRepository.getUserByEmail(email);
         if (user && (await this.validatePassword(password, user.password))) {
             const { id, email, address, gender, birthday, fistName, lastName, schedule, createAt, updateAt } = user;
+            const role = 'user';
             const payload = {
                 id,
                 email,
@@ -114,6 +149,7 @@ export class UserService implements IUserService {
                 fistName,
                 lastName,
                 schedule,
+                role,
                 createAt,
                 updateAt
             };

@@ -18,8 +18,9 @@ export class ScheduleRepository extends Repository<Schedule> {
 
     async getScheduleByDoctor(doctorId: string, day?: DayOfWeek): Promise<Schedule[]> {
         const scheduleByDoctor = this.createQueryBuilder('schedule')
-            .where('schedule.doctorId LIKE :doctorId', { doctorId })
+            .where('schedule.doctorId = :doctorId', { doctorId })
             .leftJoinAndSelect('schedule.calender', 'calender')
+            .leftJoinAndSelect('schedule.user', 'user')
             .leftJoinAndSelect('calender.timeslot', 'timeslot');
 
         if (day) {
@@ -56,7 +57,7 @@ export class ScheduleRepository extends Repository<Schedule> {
 
     async getScheduleByDoctorforUser(doctorId: string, day?: DayOfWeek): Promise<Schedule[]> {
         const scheduleByDoctor = this.createQueryBuilder('schedule')
-            .andWhere('schedule.busy = :check', {check: 0})
+            .andWhere('schedule.busy = :check', { check: 0 })
             .andWhere('schedule.doctorId LIKE :doctorId', { doctorId })
             .leftJoinAndSelect('schedule.calender', 'calender')
             .leftJoinAndSelect('calender.timeslot', 'timeslot');

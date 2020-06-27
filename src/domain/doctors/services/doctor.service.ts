@@ -48,6 +48,7 @@ export class DoctorService implements IDoctorService {
                 createAt,
                 updateAt
             } = doctor;
+            const role = 'doctor';
             const payload = {
                 id,
                 email,
@@ -55,6 +56,7 @@ export class DoctorService implements IDoctorService {
                 description,
                 fistName,
                 lastName,
+                role,
                 createAt,
                 updateAt
             }
