@@ -10,14 +10,14 @@ import { AdminGuard } from '../../../common';
 
 @ApiTags('calender')
 @Controller('calender')
-@ApiBearerAuth()
-@UseGuards(AdminGuard)
 export class CalenderController {
     constructor(
         @Inject(CalenderServiceToken)
         private readonly calenderService: CalenderService
     ) {}
 
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Post('create')
     async createCalender(@Body() calenderDto: SaveCalenderDataDto): Promise<Calender> {
         return await this.calenderService.createCalender(calenderDto);
@@ -33,13 +33,20 @@ export class CalenderController {
         return await this.calenderService.getCalenderById(dto.id);
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Delete('delete/:id')
     async deleteCalender(@Param() dto: CalenderIdParamDto): Promise<DeleteResult> {
         return await this.calenderService.deleteCalender(dto.id);
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AdminGuard)
     @Put('update/:id')
-    async updateCalender(@Param() paramDto: CalenderIdParamDto, @Body() bodyDto: UpdateCalenderBodyDto): Promise<Calender> {
+    async updateCalender(
+        @Param() paramDto: CalenderIdParamDto,
+        @Body() bodyDto: UpdateCalenderBodyDto
+    ): Promise<Calender> {
         return await this.calenderService.updateCalender(paramDto.id, bodyDto);
     }
 }
