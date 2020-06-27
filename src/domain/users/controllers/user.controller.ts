@@ -40,8 +40,6 @@ export class UserController {
         description: 'Create one user is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @ApiBearerAuth()
-    @UseGuards(AdminGuard)
     @Post('create')
     public async createUser(@Body() bodyDto: CreateUserBodyDto): Promise<User> {
         const user = await this.userService.createUser(plainToClass(User, bodyDto));
