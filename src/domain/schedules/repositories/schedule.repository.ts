@@ -38,6 +38,7 @@ export class ScheduleRepository extends Repository<Schedule> {
             .from(Schedule)
             .andWhere('schedule.doctorId = :doctorId', { doctorId })
             .andWhere('schedule.calenderId = :calenderId', { calenderId })
+            .andWhere('schedule.busy = :value', {value: false})
             .execute();
     }
 

@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as Moment from 'moment';
 import {QueryBus} from '@nestjs/cqrs';
 import { GetScheduleByIdQuery, Schedule, SaveScheduleQuery } from '../../schedules';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -22,6 +23,12 @@ export class UserService implements IUserService {
     ) {}
 
     public async createUser(user: User): Promise<User> {
+        const existedUser = await this.userRepository.getUserByEmail(user.email);
+
+        if (existedUser !== undefined && existedUser !== null) {
+            throw new BadRequestException('That email  was existed.');
+        }
+
         user.id = uuid();
         return await this.userRepository.saveUser(user);
     }
@@ -108,6 +115,10 @@ export class UserService implements IUserService {
         const user = await this.userRepository.getUserById(id);
         // dùng query bus qua bên Schedule đẻ lấy, k dc impỏt repossiroty ỏ ngoài domain của nó
         const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(new GetScheduleByIdQuery(scheduleId));
+
+        if (!isNullOrUndefined(user.schedule)) {
+            throw new BadRequestException('Can not booking schedule, You have a schedule.');
+        }
 
         if (schedule.busy) {
             throw new BadRequestException('The schedule of doctor is busy');

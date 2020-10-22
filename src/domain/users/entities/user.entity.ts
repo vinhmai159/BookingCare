@@ -1,8 +1,7 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, BeforeInsert, OneToOne, JoinColumn } from 'typeorm';
-import { Expose } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { Expose } from 'class-transformer';
+import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Schedule } from '../../schedules';
-import { scheduled } from 'rxjs';
 
 @Entity('users')
 export class User {
@@ -25,13 +24,21 @@ export class User {
     @Column()
     lastName: string;
 
-    @Column()
-    birthday: Date;
+    @Column({
+        type: 'date',
+        nullable: true,
+        default: null
+    })
+    birthday: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     address: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     gender: string;
 
     @OneToOne(

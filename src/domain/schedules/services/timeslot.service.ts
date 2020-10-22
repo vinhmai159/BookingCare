@@ -1,17 +1,15 @@
-import {TimeSlotRepository, CalenderRepository} from '../repositories';
-import {InjectRepository} from '@nestjs/typeorm';
-import {TimeSlot} from '../entities';
-import {Injectable} from '@nestjs/common';
-import {
-    DeleteResult,
-} from 'typeorm';
+import { TimeSlotRepository, CalenderRepository } from '../repositories';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TimeSlot } from '../entities';
+import { Injectable } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import {ITimeSlotService} from '../interfaces';
-import {UpdateTimeSlotQueryDto} from '../dto';
+import { ITimeSlotService } from '../interfaces';
+import { UpdateTimeSlotQueryDto } from '../dto';
 
 @Injectable()
 export class TimeslotService implements ITimeSlotService {
-    constructor (
+    constructor(
         @InjectRepository(TimeSlotRepository)
         private readonly timeslotRepository: TimeSlotRepository,
         @InjectRepository(CalenderRepository)
@@ -35,7 +33,6 @@ export class TimeslotService implements ITimeSlotService {
         await this.calenderRepository.deleteCalenderByTimeSlot(id);
         return await this.timeslotRepository.deleteTimeSlot(id);
     }
-
 
     async updateTimeSlot(id: string, timeSlot: UpdateTimeSlotQueryDto): Promise<TimeSlot> {
         const timeSlotWillUpdate = await this.timeslotRepository.getTimeSlotById(id);
