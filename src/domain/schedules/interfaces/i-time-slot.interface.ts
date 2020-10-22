@@ -1,4 +1,4 @@
-import {TimeSlot} from '../../entities';
+import {TimeSlot} from '../entities';
 import { DeleteResult } from 'typeorm';
 
 export interface ITimeSlotService {
@@ -10,5 +10,5 @@ export interface ITimeSlotService {
 
     deleteTimeSlot(id: string): Promise<DeleteResult>;
 
-    updateTimeSlot(timeSlot: TimeSlot): TimeSlot | Promise<TimeSlot>;
+    updateTimeSlot(id: string, timeSlot: TimeSlot): TimeSlot | Promise<TimeSlot>;
 }

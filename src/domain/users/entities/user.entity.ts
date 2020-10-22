@@ -1,8 +1,7 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, BeforeInsert, OneToOne, JoinColumn } from 'typeorm';
-import { Expose } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { Expose } from 'class-transformer';
+import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Schedule } from '../../schedules';
-import { isNull } from 'util';
 
 @Entity('users')
 export class User {
@@ -42,7 +41,10 @@ export class User {
     })
     gender: string;
 
-    @OneToOne(() => Schedule)
+    @OneToOne(
+        () => Schedule,
+        schedule => schedule.user
+    )
     @JoinColumn()
     schedule: Schedule;
 

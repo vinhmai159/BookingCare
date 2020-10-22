@@ -53,10 +53,12 @@ export class AdminService implements IAdminService {
                 createAt,
                 updateAt
             } = admin;
+            const role = 'admin';
             const payload = {
                 id,
                 name,
                 userName,
+                role,
                 createAt,
                 updateAt
             }

@@ -2,7 +2,7 @@ import { Entity, CreateDateColumn, UpdateDateColumn, ManyToOne, Column, PrimaryC
 import { Doctor } from '../../doctors/';
 import {Calender} from './calender.entity';
 import { Expose } from 'class-transformer';
-// import {User} from '../../users';
+import {User} from '../../users';
 
 @Entity('schedule')
 export class Schedule {
@@ -21,8 +21,8 @@ export class Schedule {
     @Expose()
     busy: boolean;
 
-    // @OneToOne(type => User, user => user.schedule)
-    // user: User;
+    @OneToOne(type => User, user => user.schedule)
+    user: User;
 
     @CreateDateColumn({ type: 'timestamp' })
     public createAt: Date;

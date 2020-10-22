@@ -5,9 +5,9 @@ import { UserServiceToken } from './contants';
 import { User } from './entities';
 import { UserRepository } from './repositories';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ScheduleRepository, Schedule } from '../schedules';
 import {PassportModule} from '@nestjs/passport';
 import {JwtModule} from '@nestjs/jwt';
+import {CqrsModule} from '@nestjs/cqrs';
 
 const serviceProvides = [
     {
@@ -25,7 +25,9 @@ const serviceProvides = [
                 expiresIn: 3600 * 24
             }
         }),
-        TypeOrmModule.forFeature([User, UserRepository, Schedule, ScheduleRepository])],
+        TypeOrmModule.forFeature([User, UserRepository]),
+        CqrsModule
+    ],
     controllers: [UserController],
     providers: [...serviceProvides],
     exports: []

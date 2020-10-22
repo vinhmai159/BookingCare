@@ -1,19 +1,13 @@
-import { Injectable, Inject, BadRequestException, ExceptionFilter, ConflictException } from '@nestjs/common';
-import { IScheduleService, ICalenderService } from '../constants/interfaces';
-import { ScheduleRepository } from '../repositories';
-import { Schedule } from '../entities';
-import { DoctorService } from '../../doctors';
-import { CalenderService } from './calender.service';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Doctor } from '../../doctors/entities/doctor.entity';
-import { Calender } from '../entities/calender.entity';
-import { DayOfWeek, CalenderServiceToken } from '../constants';
-import { IDoctorService } from '../../doctors/interfaces';
-import { DoctorServiceToken } from '../../doctors/constants';
-import { DoctorRepository } from '../../doctors/repositories';
-import { v4 as uuid } from 'uuid';
 import { DeleteResult } from 'typeorm';
-import { ScheduleByDoctor } from '../dto';
+import { v4 as uuid } from 'uuid';
+import { Doctor } from '../../doctors/entities/doctor.entity';
+import { DoctorRepository } from '../../doctors/repositories';
+import { CalenderServiceToken, DayOfWeek } from '../constants';
+import { ICalenderService, IScheduleService } from '../interfaces';
+import { Schedule } from '../entities';
+import { ScheduleRepository } from '../repositories';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
@@ -129,7 +123,7 @@ export class ScheduleService implements IScheduleService {
                 result.MONDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    // bookingBy: data.user,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -139,7 +133,7 @@ export class ScheduleService implements IScheduleService {
                 result.TUESDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    // bookingBy: data.user,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -149,7 +143,7 @@ export class ScheduleService implements IScheduleService {
                 result.WEDNESDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    // bookingBy: data.user,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -159,7 +153,7 @@ export class ScheduleService implements IScheduleService {
                 result.THURSDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    // bookingBy: data.user,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -169,7 +163,7 @@ export class ScheduleService implements IScheduleService {
                 result.FRIDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    // bookingBy: data.user,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -179,7 +173,7 @@ export class ScheduleService implements IScheduleService {
                 result.SATURDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    // bookingBy: data.user,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -189,7 +183,7 @@ export class ScheduleService implements IScheduleService {
                 result.SUNDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    // bookingBy: data.user,
+                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });

@@ -1,7 +1,7 @@
-import {Calender} from '../../entities';
+import {Calender} from '../entities';
 import { DeleteResult } from 'typeorm';
-import {DayOfWeek} from '..';
-import {SaveCalenderDataDto, UpdateCalenderBodyDto} from '../../dto';
+import {DayOfWeek} from '../constants';
+import {SaveCalenderDataDto, UpdateCalenderBodyDto} from '../dto';
 
 export interface ICalenderService {
     createCalender(calenderDto: SaveCalenderDataDto): Calender | Promise<Calender>;
@@ -12,5 +12,5 @@ export interface ICalenderService {
 
     deleteCalender(id: string): Promise<DeleteResult>;
 
-    updateCalender(calenderDto: UpdateCalenderBodyDto): Calender | Promise<Calender>;
+    updateCalender(id: string, calenderDto: UpdateCalenderBodyDto): Calender | Promise<Calender>;
 }

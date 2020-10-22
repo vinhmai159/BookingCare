@@ -4,11 +4,6 @@ import {IsNotEmpty, IsString, IsIn} from 'class-validator';
 import {DayOfWeek} from '../../constants';
 
 export class UpdateCalenderBodyDto {
-    @ApiProperty()
-    @Expose()
-    @IsNotEmpty()
-    @IsString()
-    id: string;
 
     @ApiProperty({
         enum: [
