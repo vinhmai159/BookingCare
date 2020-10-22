@@ -1,19 +1,17 @@
-import { Controller, Post, Inject, Query, Body, Delete, UseGuards, Put, Get, Param } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { ScheduleService } from '../services';
-import { Schedule } from '../entities';
-import {
-    CreateScheduleQueryDto,
-    GetScheduleByDoctorQueryDto,
-    CreateOneSchedulesQueryDto,
-    ScheduleByDoctor,
-    GetScheduleByDoctorParamDto
-} from '../dto';
-import { ScheduleServiceToken } from '../constants';
-import { IScheduleService } from '../interfaces';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard, jwt } from '../../../common';
 import { Doctor } from '../../doctors';
-import { DeleteResult } from 'typeorm';
+import { ScheduleServiceToken } from '../constants';
+import { IScheduleService } from '../constants/interfaces';
+import {
+    CreateOneSchedulesQueryDto,
+    CreateScheduleParamDto,
+    GetScheduleByDoctorQueryDto,
+    ScheduleByDoctor,
+    UpdateScheduleParamDto
+} from '../dto';
+import { Schedule } from '../entities';
 
 @ApiTags('schedule')
 @Controller('schedule')
@@ -26,7 +24,7 @@ export class ScheduleController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Post('create-many')
-    async createSchedules(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<Schedule[]> {
+    async createSchedules(@jwt() doctor: Doctor, @Body() dto: UpdateScheduleParamDto): Promise<Schedule[]> {
         return await this.scheduleService.createSchedule(doctor, dto.calenderIds);
     }
 
@@ -58,15 +56,15 @@ export class ScheduleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @Delete('delete/:doctorId/:calenderIds')
-    async deleteSchedules(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<DeleteResult> {
-        return await this.scheduleService.deleteSchedulesBydoctor(doctor.id, dto.calenderIds);
+    @Delete('delete/:calenderId')
+    async deleteSchedules(@jwt() doctor: Doctor, @Param() dto: CreateScheduleParamDto): Promise<boolean> {
+        return await this.scheduleService.deleteSchedulesByDoctor(doctor.id, dto.calenderId);
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @Put('update/:doctorId/:calenderIds')
-    async updateSchedulesByDoctor(@jwt() doctor: Doctor, @Body() dto: CreateScheduleQueryDto): Promise<Schedule[]> {
-        return await this.scheduleService.updateSchedulesforDoctor(doctor, dto.calenderIds);
+    @Put('update/:calenderIds')
+    async updateSchedulesByDoctor(@jwt() doctor: Doctor, @Body() dto: UpdateScheduleParamDto): Promise<Schedule[]> {
+        return await this.scheduleService.updateSchedulesForDoctor(doctor, dto.calenderIds);
     }
 }

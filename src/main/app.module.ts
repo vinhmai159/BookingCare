@@ -23,7 +23,7 @@ import {LoggingInterceptor, ErrorInterceptor} from '../common';
       database: 'booking-care',
       // entities: [Doctor],
       entities: [__dirname + '/../../**/*.entity.{js,ts}'],
-      synchronize: true,
+      synchronize: false,
       logging: true
     }),
     DoctorsModule,

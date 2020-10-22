@@ -16,7 +16,7 @@ export class CreateUserBodyDto extends UpdateUserBodyDto {
     @MinLength(6)
     @Matches(
         /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-        {message: 'Password too weak!!!!'})
+        {message: 'Wrong format of password!!!!'})
     @IsNotEmpty()
     @ApiProperty()
     password: string;

@@ -1,5 +1,5 @@
 import { Injectable, Inject, BadRequestException, ExceptionFilter, ConflictException } from '@nestjs/common';
-import { IScheduleService, ICalenderService } from '../interfaces';
+import { IScheduleService, ICalenderService } from '../constants/interfaces';
 import { ScheduleRepository } from '../repositories';
 import { Schedule } from '../entities';
 import { DoctorService } from '../../doctors';
@@ -23,7 +23,7 @@ export class ScheduleService implements IScheduleService {
         @InjectRepository(Doctor)
         private readonly doctorService: DoctorRepository,
         @Inject(CalenderServiceToken)
-        private readonly calenderServide: ICalenderService
+        private readonly calenderService: ICalenderService
     ) {}
 
     async createSchedule(doctor: Doctor, calenderIds: string[]): Promise<Schedule[]> {
@@ -33,7 +33,7 @@ export class ScheduleService implements IScheduleService {
         schedule.doctor = doctor;
         for (let key = 0; key < calenderIds.length; key++) {
             schedule.id = uuid();
-            const calender = await this.calenderServide.getCalenderById(calenderIds[key]);
+            const calender = await this.calenderService.getCalenderById(calenderIds[key]);
             schedule.calender = calender;
             scheduleList[key] = await this.scheduleRepository.createSchedule(schedule);
         }
@@ -41,7 +41,7 @@ export class ScheduleService implements IScheduleService {
         return scheduleList;
     }
 
-    public async updateSchedulesforDoctor(doctor: Doctor, calenderIds: string[]): Promise<any> {
+    public async updateSchedulesForDoctor(doctor: Doctor, calenderIds: string[]): Promise<any> {
         const scheduleForDoctor = await this.scheduleRepository.getScheduleByDoctor(doctor.id);
         const exitCalenderIds = [];
         const errors = [];
@@ -53,7 +53,7 @@ export class ScheduleService implements IScheduleService {
         for (const calenderId of calenderIds) {
             let check = 1;
             for (const exitCalenderId of exitCalenderIds) {
-                if ( calenderId === exitCalenderId) {
+                if (calenderId === exitCalenderId) {
                     check = 0;
                 }
             }
@@ -65,23 +65,25 @@ export class ScheduleService implements IScheduleService {
         for (const exitCalenderId of exitCalenderIds) {
             let check = 1;
             for (const calenderId of calenderIds) {
-                if ( exitCalenderId === calenderId ) {
+                if (exitCalenderId === calenderId) {
                     check = 0;
                 }
             }
             if (check) {
                 try {
                     await this.scheduleRepository.deleteSchedulesByDoctor(doctor.id, exitCalenderId);
-                } catch  {
-                    const exitCaldender = await this.calenderServide.getCalenderById(exitCalenderId);
-                    errors.push(`The schedule '${exitCaldender.day}: ${exitCaldender.timeslot.name}' can not delete, that is have been booking by a user.`)
+                } catch {
+                    const exitCaldender = await this.calenderService.getCalenderById(exitCalenderId);
+                    errors.push(
+                        `The schedule '${exitCaldender.day}: ${exitCaldender.timeslot.name}' can not delete, that is have been booking by a user.`
+                    );
                 }
             }
         }
 
         return {
             data: await this.getSchedulesByDoctor(doctor.id),
-            errors,
+            errors
         };
     }
 
@@ -89,34 +91,20 @@ export class ScheduleService implements IScheduleService {
         const schedule = new Schedule();
         schedule.id = uuid();
         schedule.doctor = doctor;
-        const calender = await this.calenderServide.getCalenderById(calenderId);
+        const calender = await this.calenderService.getCalenderById(calenderId);
         schedule.calender = calender;
 
         return await this.scheduleRepository.createSchedule(schedule);
     }
 
-    async deleteSchedulesBydoctor(doctorId: string, calenderIds: string[]): Promise<any> {
-        let count = 0;
-        let deletedId = [];
-        let error = [];
-        for (const element of calenderIds) {
-            try {
-                const scheduleDelete = await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, element);
-                if (scheduleDelete) {
-                    count += 1;
-                    deletedId.push(doctorId);
-                }
-            } catch {
-                error.push({
-                    error: `The schedule '${element}' can not delete, that is have been booking by a user.`
-                });
-            }
+    async deleteSchedulesByDoctor(doctorId: string, calenderId: string): Promise<boolean> {
+        try {
+            const data = await this.scheduleRepository.deleteSchedulesByDoctor(doctorId, calenderId);
+        } catch {
+            throw new BadRequestException(`The schedule can not delete, that is have been booking by a user.`);
         }
-        return {
-            deletedId,
-            total: count,
-            error
-        };
+
+        return true;
     }
 
     private async deleteAllScheduleByDoctor(doctorId: string): Promise<DeleteResult> {
@@ -137,8 +125,6 @@ export class ScheduleService implements IScheduleService {
         };
 
         for (const data of datas) {
-
-
             if (data.calender.day === DayOfWeek.MONDAY) {
                 result.MONDAY.push({
                     scheduleId: data.id,

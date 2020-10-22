@@ -6,7 +6,7 @@ import {
     DeleteResult,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import {ITimeSlotService} from '../interfaces';
+import {ITimeSlotService} from '../constants/interfaces';
 
 @Injectable()
 export class TimeslotService implements ITimeSlotService {

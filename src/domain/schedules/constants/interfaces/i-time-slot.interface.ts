@@ -1,4 +1,4 @@
-import {TimeSlot} from '../entities';
+import {TimeSlot} from '../../entities';
 import { DeleteResult } from 'typeorm';
 
 export interface ITimeSlotService {

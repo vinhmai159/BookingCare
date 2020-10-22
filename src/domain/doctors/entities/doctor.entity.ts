@@ -16,7 +16,7 @@ export class Doctor {
   @PrimaryColumn()
   id: string;
 
-  @Column({ default: null})
+  @Column({ nullable: true})
   avatar: string;
 
   @Column()
@@ -25,10 +25,14 @@ export class Doctor {
   @Column()
   lastName: string;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   description: string;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   addressDetail: string;
 
   @Column({unique: true})

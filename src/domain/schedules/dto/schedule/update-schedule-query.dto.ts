@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsNotEmpty } from 'class-validator';
 
-export class UpdateScheduleParamDto {
+export class CreateScheduleParamDto {
     @ApiProperty()
     @IsNotEmpty()
     @Expose()
-    calenderIds: string[];
+    calenderId: string;
 }

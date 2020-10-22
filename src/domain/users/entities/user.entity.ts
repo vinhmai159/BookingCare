@@ -2,6 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, BeforeInsert, OneToOne
 import { Expose } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { Schedule } from '../../schedules';
+import { isNull } from 'util';
 
 @Entity('users')
 export class User {
@@ -24,13 +25,21 @@ export class User {
     @Column()
     lastName: string;
 
-    @Column()
-    birthday: Date;
+    @Column({
+        type: 'date',
+        nullable: true,
+        default: null
+    })
+    birthday: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     address: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     gender: string;
 
     @OneToOne(() => Schedule)

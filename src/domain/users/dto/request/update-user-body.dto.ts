@@ -4,15 +4,12 @@ import {ApiProperty} from '@nestjs/swagger';
 
 @Exclude()
 export class UpdateUserBodyDto {
-
     @Expose()
-    @IsString()
     @IsOptional()
     @ApiProperty()
     fistName?: string;
 
     @Expose()
-    @IsString()
     @IsOptional()
     @ApiProperty()
     lastName?: string;
@@ -23,13 +20,11 @@ export class UpdateUserBodyDto {
     birthday?: Date;
 
     @Expose()
-    @IsString()
     @IsOptional()
     @ApiProperty()
     address?: string;
 
     @Expose()
-    @IsString()
     @IsOptional()
     @ApiProperty()
     gender?: string;

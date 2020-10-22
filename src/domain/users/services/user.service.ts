@@ -22,6 +22,12 @@ export class UserService implements IUserService {
     ) {}
 
     public async createUser(user: User): Promise<User> {
+        const existedUser = await this.userRepository.getUserByEmail(user.email);
+
+        if (existedUser !== undefined && existedUser !== null) {
+            throw new BadRequestException('That email  was existed.');
+        }
+
         user.id = uuid();
         return await this.userRepository.saveUser(user);
     }

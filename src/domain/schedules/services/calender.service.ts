@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {ICalenderService} from '../interfaces';
+import {ICalenderService} from '../constants/interfaces';
 import {CalenderRepository, TimeSlotRepository} from '../repositories';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Calender} from '../entities';
