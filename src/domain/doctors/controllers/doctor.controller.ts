@@ -60,12 +60,11 @@ export class DoctorController {
         return await this.doctorService.createDoctor(plainToClass(Doctor, doctorDto), null);
     }
 
-    @ApiBearerAuth()
-    @UseGuards(AdminGuard)
-    @Get('/admin/:id')
+    @Get('/public/:id')
     async getDoctorByIdForAdmin(@Param() dto: IdDoctorParamDto): Promise<Doctor> {
         return await this.doctorService.getDoctorById(dto.id);
     }
+
 
     @ApiBearerAuth()
     @UseGuards(DoctorGuard)
