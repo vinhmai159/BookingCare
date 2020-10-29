@@ -37,7 +37,7 @@
     "@types/lodash": "^4.14.162",
     "@types/mongodb": "^3.5.18",
     "@types/mysql": "^2.15.12",
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
     "esm": "^3.2.25",
