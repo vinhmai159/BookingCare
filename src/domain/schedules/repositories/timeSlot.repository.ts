@@ -1,6 +1,8 @@
 import { TimeSlot } from '../entities';
 import { Repository, EntityRepository, DeleteResult } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 @EntityRepository(TimeSlot)
 export class TimeSlotRepository extends Repository<TimeSlot> {
     async saveTimeSlot(timeslot: TimeSlot): Promise<TimeSlot> {
@@ -11,7 +13,7 @@ export class TimeSlotRepository extends Repository<TimeSlot> {
         const timeSlot = this.createQueryBuilder('timeslot');
 
         if (name) {
-            timeSlot.andWhere('timeslot.name LIKE :name', {name: `%${name}%`});
+            timeSlot.andWhere('timeslot.name LIKE :name', { name: `%${name}%` });
         }
 
         timeSlot.orderBy('timeslot.name', 'ASC');
@@ -20,15 +22,15 @@ export class TimeSlotRepository extends Repository<TimeSlot> {
 
     async getTimeSlotById(id: string): Promise<TimeSlot> {
         return await this.createQueryBuilder('timeslot')
-                            .where('timeslot.id LIKE :id', {id})
-                            .getOne();
+            .where('timeslot.id LIKE :id', { id })
+            .getOne();
     }
 
     async deleteTimeSlot(id: string): Promise<DeleteResult> {
         return await this.createQueryBuilder('timeslot')
-                            .delete()
-                            .from(TimeSlot)
-                            .where('timeslot.id LIKE :id', {id})
-                            .execute();
+            .delete()
+            .from(TimeSlot)
+            .where('timeslot.id LIKE :id', { id })
+            .execute();
     }
 }

@@ -9,7 +9,7 @@ import {Schedule} from 'domain/schedules/entities';
 export class GetScheduleByIdHandler implements IQueryHandler<GetScheduleByIdQuery> {
     constructor(
         @InjectRepository(ScheduleRepository)
-        private readonly scheduleReposittory: ScheduleRepository
+        private readonly scheduleRepository: ScheduleRepository
     ) {
         // super(loggerService)
     }
@@ -19,7 +19,7 @@ export class GetScheduleByIdHandler implements IQueryHandler<GetScheduleByIdQuer
     }
 
     public async getScheduleById(userId: string): Promise<Schedule> {
-        const schedule = await this.scheduleReposittory.getScheduleById(userId);
+        const schedule = await this.scheduleRepository.getScheduleById(userId);
         if (!schedule) {
             throw new BadRequestException('USER_NOT_FOUND_ERROR');
         }

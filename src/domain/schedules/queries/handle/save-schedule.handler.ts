@@ -8,7 +8,7 @@ import {Schedule} from '../../entities';
 export class SaveScheduleHandler implements ICommandHandler<SaveScheduleQuery> {
     constructor(
         @InjectRepository(ScheduleRepository)
-        private readonly scheduleReposittory: ScheduleRepository
+        private readonly scheduleRepository: ScheduleRepository
     ) {}
 
     async execute(query: SaveScheduleQuery): Promise<Schedule> {
@@ -16,6 +16,6 @@ export class SaveScheduleHandler implements ICommandHandler<SaveScheduleQuery> {
     }
 
     public async saveSchedule(schedule: Schedule): Promise<Schedule> {
-        return await this.scheduleReposittory.createSchedule(schedule);
+        return await this.scheduleRepository.createSchedule(schedule);
     }
 }

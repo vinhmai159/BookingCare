@@ -1,7 +1,7 @@
 import { TimeSlotRepository, CalenderRepository } from '../repositories';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TimeSlot } from '../entities';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { ITimeSlotService } from '../interfaces';
@@ -13,7 +13,9 @@ export class TimeslotService implements ITimeSlotService {
         @InjectRepository(TimeSlotRepository)
         private readonly timeslotRepository: TimeSlotRepository,
         @InjectRepository(CalenderRepository)
-        private readonly calenderRepository: CalenderRepository
+        private readonly calenderRepository: CalenderRepository,
+        // @Inject(forwardRef(() => CalenderRepository))
+        // private calenderRepository: CalenderRepository
     ) {}
 
     async createTimeSlot(timeSlot: TimeSlot): Promise<TimeSlot> {

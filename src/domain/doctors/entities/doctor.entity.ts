@@ -1,62 +1,59 @@
-import {
-  PrimaryColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  BeforeInsert,
-  Entity,
-  JoinColumn,
-} from 'typeorm';
+import { PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, Entity, JoinColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import {Expertise} from '../../expertise';
+import { Expertise } from '../../expertise';
 import { OneToOne } from 'typeorm';
+import { Hospital } from '../../hospital';
 
 @Entity('doctor')
 export class Doctor {
-  @PrimaryColumn()
-  id: string;
+    @PrimaryColumn()
+    id: string;
 
-  @Column({ nullable: true})
-  avatar: string;
+    @Column({ nullable: true })
+    avatar: string;
 
-  @Column()
-  fistName: string;
+    @Column()
+    fistName: string;
 
-  @Column()
-  lastName: string;
+    @Column()
+    lastName: string;
 
-  @Column({
-    nullable: true
-  })
-  description: string;
+    @Column({
+        nullable: true
+    })
+    description: string;
 
-  @Column({
-    nullable: true
-  })
-  addressDetail: string;
+    @Column({
+        nullable: true
+    })
+    addressDetail: string;
 
-  @Column({unique: true})
-  email: string;
+    @Column({ unique: true })
+    email: string;
 
-  @Column()
-  password: string;
+    @Column()
+    password: string;
 
-  @Column()
-  salt: string;
+    @Column()
+    salt: string;
 
-  @OneToOne(() => Expertise)
-  @JoinColumn()
-  expertise: Expertise;
+    @OneToOne(() => Expertise)
+    @JoinColumn()
+    expertise: Expertise;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  public createAt: Date;
+    @OneToOne(() => Hospital)
+    @JoinColumn()
+    hospital: Hospital;
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  public updateAt: Date;
+    @CreateDateColumn({ type: 'timestamp' })
+    public createAt: Date;
 
-  @BeforeInsert()
-  async hashPassword(): Promise<any> {
-    this.salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, this.salt);
-  }
+    @UpdateDateColumn({ type: 'timestamp' })
+    public updateAt: Date;
+
+    @BeforeInsert()
+    async hashPassword(): Promise<any> {
+        this.salt = await bcrypt.genSalt();
+        this.password = await bcrypt.hash(this.password, this.salt);
+    }
 }

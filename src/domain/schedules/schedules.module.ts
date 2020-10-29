@@ -1,14 +1,12 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TimeSlot, Calender, Schedule } from './entities';
-import { TimeSlotRepository, CalenderRepository, ScheduleRepository } from './repositories';
-import { TimeslotService, CalenderService, ScheduleService } from './services';
-import { TimeSlotServiceToken, CalenderServiceToken, ScheduleServiceToken } from './constants';
-import { TimeSlotController, CalenderController, ScheduleController } from './controllers';
-import { Doctor } from '../doctors/entities/doctor.entity';
-import { DoctorRepository } from '../doctors/repositories/doctor.repository';
-import { ScheduleCommandHandlers } from './queries/handle';
+import { forwardRef, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CalenderServiceToken, ScheduleServiceToken, TimeSlotServiceToken } from './constants';
+import { CalenderController, ScheduleController, TimeSlotController } from './controllers';
+import { Calender, Schedule, TimeSlot } from './entities';
+import { ScheduleCommandHandlers } from './queries/handle';
+import { CalenderRepository, ScheduleRepository, TimeSlotRepository } from './repositories';
+import { CalenderService, ScheduleService, TimeslotService } from './services';
 
 const serviceProviders = [
     {
@@ -34,13 +32,14 @@ const serviceProviders = [
             CalenderRepository,
             Schedule,
             ScheduleRepository,
-            Doctor,
-            DoctorRepository
+            // Doctor,
+            // DoctorRepository
         ]),
-        CqrsModule
+        CqrsModule,
+        // forwardRef(() => CalenderService)
     ],
     controllers: [TimeSlotController, CalenderController, ScheduleController],
     providers: [...serviceProviders, ...ScheduleCommandHandlers],
-    exports: [...serviceProviders]
+    exports: []
 })
 export class SchedulesModule {}

@@ -1,15 +1,16 @@
-import {Expose} from 'class-transformer';
-import {IsString, IsOptional} from 'class-validator';
-import {ApiProperty} from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
 export class GetDoctorQueryDto {
-    @Expose()
+    @ApiProperty({ required: false })
     @IsOptional()
-    @ApiProperty()
     name?: string;
 
-    @Expose()
+    @ApiProperty({ required: false })
     @IsOptional()
-    @ApiProperty()
     expertise?: string;
+
+    @ApiProperty({ required: false })
+    @IsOptional()
+    hospital?: string;
 }

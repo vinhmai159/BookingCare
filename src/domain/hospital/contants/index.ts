@@ -1,0 +1,1 @@
+export const HospitalServiceToken = 'HospitalServiceToken';

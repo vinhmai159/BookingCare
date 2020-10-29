@@ -2,21 +2,30 @@ import { EntityRepository, Repository, DeleteResult } from 'typeorm';
 import { Doctor } from '../entities';
 import { UpdateDoctorQueryDto } from '../dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { isNull, isUndefined } from 'lodash';
 
 @EntityRepository(Doctor)
 export class DoctorRepository extends Repository<Doctor> {
-    async getDoctors(name?: string, expertise?: string): Promise<Doctor[]> {
-        const doctor = this.createQueryBuilder('doctor').leftJoinAndSelect('doctor.expertise', 'expertise');
+    async getDoctors(name?: string, expertise?: string, hospital?: string): Promise<Doctor[]> {
+        const doctor = this.createQueryBuilder('doctor')
+            .leftJoinAndSelect('doctor.expertise', 'expertise')
+            .leftJoinAndSelect('doctor.hospital', 'hospital');
 
-        if (name) {
+        if (!isNull(name) && !isUndefined(name)) {
             doctor.andWhere('doctor.fistName LIKE :name OR doctor.lastName LIKE :name', {
                 name: `%${name}%`
             });
         }
 
-        if (expertise) {
+        if (!isNull(expertise) && !isUndefined(expertise)) {
             doctor.andWhere('expertise.name LIKE :expertise', {
                 expertise: `%${expertise}%`
+            });
+        }
+
+        if (!isNull(hospital) && !isUndefined(hospital)) {
+            doctor.andWhere('hospital.name LIKE :hospital', {
+                hospital: `%${hospital}%`
             });
         }
 

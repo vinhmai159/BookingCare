@@ -1,16 +1,16 @@
-import { Injectable, BadRequestException, NotFoundException, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
-import { IUserService } from '../interfaces';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserRepository } from '../repositories';
-import { User } from '../entities';
-import { DeleteResult } from 'typeorm';
-import { v4 as uuid } from 'uuid';
-import * as bcrypt from 'bcrypt';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { QueryBus } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import * as Moment from 'moment';
-import {QueryBus} from '@nestjs/cqrs';
-import { GetScheduleByIdQuery, Schedule, SaveScheduleQuery } from '../../schedules';
+import { DeleteResult } from 'typeorm';
 import { isNullOrUndefined } from 'util';
+import { v4 as uuid } from 'uuid';
+import { GetScheduleByIdQuery, SaveScheduleQuery, Schedule } from '../../schedules';
+import { User } from '../entities';
+import { IUserService } from '../interfaces';
+import { UserRepository } from '../repositories';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -19,7 +19,6 @@ export class UserService implements IUserService {
         private readonly userRepository: UserRepository,
         private readonly jwtService: JwtService,
         private readonly queryBus: QueryBus
-
     ) {}
 
     public async createUser(user: User): Promise<User> {
@@ -46,20 +45,10 @@ export class UserService implements IUserService {
         const schedule = {
             day,
             timeSlot
-        }
-        const {
-            id,
-            email,
-            fistName,
-            lastName,
-            birthday,
-            address,
-            gender,
-        } = data
+        };
+        const { id, email, fistName, lastName, birthday, address, gender } = data;
 
-        const {
-            doctor
-        } = data.schedule;
+        const { doctor } = data.schedule;
 
         const result = {
             id,
@@ -71,7 +60,7 @@ export class UserService implements IUserService {
             gender,
             doctor,
             schedule
-        }
+        };
 
         return result;
     }
@@ -114,7 +103,9 @@ export class UserService implements IUserService {
     public async bookingSchedule(id: string, scheduleId: string): Promise<Schedule> {
         const user = await this.userRepository.getUserById(id);
         // dùng query bus qua bên Schedule đẻ lấy, k dc impỏt repossiroty ỏ ngoài domain của nó
-        const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(new GetScheduleByIdQuery(scheduleId));
+        const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(
+            new GetScheduleByIdQuery(scheduleId)
+        );
 
         if (!isNullOrUndefined(user.schedule)) {
             throw new BadRequestException('Can not booking schedule, You have a schedule.');
@@ -142,7 +133,7 @@ export class UserService implements IUserService {
         user.schedule = schedule;
         await this.userRepository.saveUser(user);
         schedule.busy = true;
-        await this.queryBus.execute<SaveScheduleQuery, Schedule>(new SaveScheduleQuery(schedule)) // save
+        await this.queryBus.execute<SaveScheduleQuery, Schedule>(new SaveScheduleQuery(schedule)); // save
         return schedule;
     }
 
