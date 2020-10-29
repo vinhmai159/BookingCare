@@ -1,21 +1,20 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Doctor } from '../../doctors/entities/doctor.entity';
-import { DoctorRepository } from '../../doctors/repositories';
 import { CalenderServiceToken, DayOfWeek } from '../constants';
-import { ICalenderService, IScheduleService } from '../interfaces';
 import { Schedule } from '../entities';
+import { ICalenderService, IScheduleService } from '../interfaces';
 import { ScheduleRepository } from '../repositories';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
     constructor(
-        @InjectRepository(Schedule)
-        private scheduleRepository: ScheduleRepository,
-        @InjectRepository(Doctor)
-        private readonly doctorService: DoctorRepository,
+        //     @Inject(forwardRef(() => CalenderRepository))
+        // private calenderService: CalenderRepository,
+        @InjectRepository(ScheduleRepository)
+        private readonly scheduleRepository: ScheduleRepository,
         @Inject(CalenderServiceToken)
         private readonly calenderService: ICalenderService
     ) {}

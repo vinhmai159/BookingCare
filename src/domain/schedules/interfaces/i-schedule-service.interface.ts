@@ -1,8 +1,6 @@
-import { Schedule } from '../entities';
-import { DayOfWeek } from '../constants';
-import { DeleteResult } from 'typeorm';
-import { ScheduleByDoctor } from '../dto';
 import { Doctor } from '../../doctors';
+import { DayOfWeek } from '../constants';
+import { Schedule } from '../entities';
 export interface IScheduleService {
     createSchedule(doctor: Doctor, calenderIds: string[]): Schedule[] | Promise<Schedule[]>;
 

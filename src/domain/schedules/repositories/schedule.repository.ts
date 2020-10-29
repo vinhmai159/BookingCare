@@ -1,7 +1,9 @@
 import { EntityRepository, Repository, DeleteResult } from 'typeorm';
 import { Schedule } from '../entities';
 import { DayOfWeek } from '../constants';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 @EntityRepository(Schedule)
 export class ScheduleRepository extends Repository<Schedule> {
     async createSchedule(schedule: Schedule): Promise<Schedule> {
@@ -38,7 +40,7 @@ export class ScheduleRepository extends Repository<Schedule> {
             .from(Schedule)
             .andWhere('schedule.doctorId = :doctorId', { doctorId })
             .andWhere('schedule.calenderId = :calenderId', { calenderId })
-            .andWhere('schedule.busy = :value', {value: false})
+            .andWhere('schedule.busy = :value', { value: false })
             .execute();
     }
 

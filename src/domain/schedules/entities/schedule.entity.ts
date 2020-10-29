@@ -1,11 +1,20 @@
-import { Entity, CreateDateColumn, UpdateDateColumn, ManyToOne, Column, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
-import { Doctor } from '../../doctors/';
-import {Calender} from './calender.entity';
 import { Expose } from 'class-transformer';
-import {User} from '../../users';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    OneToOne,
+    PrimaryColumn,
+    UpdateDateColumn
+} from 'typeorm';
+import { Doctor } from '../../doctors/';
+import { User } from '../../users';
+import { Calender } from './calender.entity';
 
 @Entity('schedule')
-export class Schedule {
+export class Schedule extends BaseEntity {
     @PrimaryColumn()
     id: string;
 
@@ -21,7 +30,10 @@ export class Schedule {
     @Expose()
     busy: boolean;
 
-    @OneToOne(type => User, user => user.schedule)
+    @OneToOne(
+        type => User,
+        user => user.schedule
+    )
     user: User;
 
     @CreateDateColumn({ type: 'timestamp' })

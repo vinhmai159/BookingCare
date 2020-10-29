@@ -1,5 +1,5 @@
 import {Transform} from 'class-transformer';
-import { isNull, isUndefined } from 'util';
+import { isNull, isUndefined } from 'lodash';
 
 export function ToNumber() {
     return Transform((value: any) => {
