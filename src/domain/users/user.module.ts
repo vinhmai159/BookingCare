@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './controllers';
-import { UserService } from './services';
-import { UserServiceToken } from './contants';
-import { User } from './entities';
-import { UserRepository } from './repositories';
+import { CqrsModule } from '@nestjs/cqrs';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {PassportModule} from '@nestjs/passport';
-import {JwtModule} from '@nestjs/jwt';
-import {CqrsModule} from '@nestjs/cqrs';
+import { UserServiceToken } from './contants';
+import { UserController } from './controllers';
+import { User } from './entities';
+import { UserQueryHandlers } from './queries';
+import { UserRepository } from './repositories';
+import { UserService } from './services';
 
 const serviceProvides = [
     {
@@ -29,7 +30,7 @@ const serviceProvides = [
         CqrsModule
     ],
     controllers: [UserController],
-    providers: [...serviceProvides],
+    providers: [...serviceProvides, ...UserQueryHandlers],
     exports: []
 })
 export class UserModule {}

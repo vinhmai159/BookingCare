@@ -5,12 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import * as Moment from 'moment';
 import { DeleteResult } from 'typeorm';
-import { isNullOrUndefined } from 'util';
 import { v4 as uuid } from 'uuid';
 import { GetScheduleByIdQuery, SaveScheduleQuery, Schedule } from '../../schedules';
 import { User } from '../entities';
 import { IUserService } from '../interfaces';
 import { UserRepository } from '../repositories';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -107,7 +107,7 @@ export class UserService implements IUserService {
             new GetScheduleByIdQuery(scheduleId)
         );
 
-        if (!isNullOrUndefined(user.schedule)) {
+        if (!isNil(user.schedule)) {
             throw new BadRequestException('Can not booking schedule, You have a schedule.');
         }
 

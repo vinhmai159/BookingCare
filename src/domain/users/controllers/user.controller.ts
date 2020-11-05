@@ -15,7 +15,6 @@ import {
 import { plainToClass } from 'class-transformer';
 import { Schedule } from '../../schedules';
 import { UserGuard, jwt, AdminGuard } from '../../../common';
-import { isNullOrUndefined } from 'util'
 
 @Controller('user')
 @ApiTags('user')

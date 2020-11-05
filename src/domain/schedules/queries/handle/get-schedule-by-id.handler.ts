@@ -15,13 +15,13 @@ export class GetScheduleByIdHandler implements IQueryHandler<GetScheduleByIdQuer
     }
 
     public async execute(query: GetScheduleByIdQuery) {
-        return await this.getScheduleById(query.doctorId);
+        return await this.getScheduleById(query.scheduleId);
     }
 
-    public async getScheduleById(userId: string): Promise<Schedule> {
-        const schedule = await this.scheduleRepository.getScheduleById(userId);
+    public async getScheduleById(scheduleId: string): Promise<Schedule> {
+        const schedule = await this.scheduleRepository.getScheduleById(scheduleId);
         if (!schedule) {
-            throw new BadRequestException('USER_NOT_FOUND_ERROR');
+            throw new BadRequestException('Schedule was not found!');
         }
         return schedule;
     }

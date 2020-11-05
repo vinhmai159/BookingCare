@@ -6,8 +6,8 @@ import { Admin } from '../entities';
 import { AdminRepository } from '../repositories';
 import * as bcrypt from 'bcrypt';
 import {JwtService} from '@nestjs/jwt';
-import {isNullOrUndefined} from 'util';
 import { v4 as uuid } from 'uuid';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class AdminService implements IAdminService {
@@ -32,11 +32,11 @@ export class AdminService implements IAdminService {
 
     public async updateAdmin(id: string, admin: Admin): Promise<Admin> {
         const exitAdmin = await this.adminRepository.getAdminById(id);
-        if (!isNullOrUndefined(admin.name)) {
+        if (!isNil(admin.name)) {
             exitAdmin.name = admin.name;
         }
 
-        if (!isNullOrUndefined(admin.phoneNumber)) {
+        if (!isNil(admin.phoneNumber)) {
             exitAdmin.phoneNumber = admin.phoneNumber;
         }
 
