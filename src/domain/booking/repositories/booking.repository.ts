@@ -3,6 +3,7 @@ import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
 import { BookingStatus } from '../constants';
 import { Booking } from '../entities';
 import { isNil } from 'lodash';
+import { MedicalRecord } from '../../medical-record/entities/medical-record.entity';
 
 export interface BookingQueryOptions {
     id?: string;
@@ -35,6 +36,14 @@ export class BookingRepository extends Repository<Booking> {
         queryBuilder.addOrderBy('Booking.createAt', 'DESC');
 
         return queryBuilder.getManyAndCount();
+    }
+
+    public async UpdateStatus(booking: Booking, medicalRecord: MedicalRecord): Promise<Booking> {
+        return await this.manager.transaction(async (entityManager) => {
+            await entityManager.getRepository(MedicalRecord).save(medicalRecord);
+
+            return await entityManager.getRepository(Booking).save(booking);
+        })
     }
 
     private applyQueryOptions(

@@ -1,5 +1,6 @@
 import { Booking } from '../entities';
 import { BookingStatus } from '../constants';
+import { MedicalRecord } from '../../medical-record';
 
 export interface IBookingService {
     createBooking(userId: string, scheduleId: string): Booking | Promise<Booking>;
@@ -8,5 +9,5 @@ export interface IBookingService {
 
     getBookings(doctorId: string): Booking[] | Promise<Booking[]>;
 
-    updateStatus(bookingId: string, status: BookingStatus): Booking | Promise<Booking>;
+    updateStatus(bookingId: string, status: BookingStatus, medicalRecord: MedicalRecord): Booking | Promise<Booking>;
 }

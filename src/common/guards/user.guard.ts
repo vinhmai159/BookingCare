@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { ExtractJwt } from './extract.jwt';
+import { isNil } from 'lodash';
 
 export class UserGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -8,7 +9,7 @@ export class UserGuard implements CanActivate {
         // const token = request.headers['x-access-token'] || request.headers.authorization;
         const token = ExtractJwt.fromAuthHeader('x-access-token')(request);
 
-        if (token) {
+        if (isNil(token)) {
             const user = await this.validateToken(token);
 
             if (user.role !== 'user') {

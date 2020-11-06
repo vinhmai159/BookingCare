@@ -1,10 +1,10 @@
-import { Controller, Get, HttpCode, HttpStatus, Inject, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DoctorGuard, jwt, UserGuard } from '../../../common';
 import { Doctor } from '../../doctors';
 import { User } from '../../users';
-import {BookingServiceToken} from '../constants';
-import { BookingQueryDto, ScheduleQueryDto, UpdateStatusQueryDto } from '../dto';
+import { BookingServiceToken } from '../constants';
+import { BookingQueryDto, CreateMedicalRecordDto, ScheduleQueryDto, UpdateStatusQueryDto } from '../dto';
 import { Booking } from '../entities';
 import { IBookingService } from '../interfaces';
 
@@ -65,10 +65,14 @@ export class BookingController {
         description: 'update status of schedule was booked is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @UseGuards(UserGuard || DoctorGuard)
+    @UseGuards(DoctorGuard)
     @Put('/:bookingId')
-    public async updateStatus(@Query() dto: UpdateStatusQueryDto): Promise<Booking> {
-        const data = await this.bookingService.updateStatus(dto.bookingId, dto.status);
+    public async updateStatus(
+        @Query() queryDto: UpdateStatusQueryDto,
+        @Body() bodyDto: CreateMedicalRecordDto
+    ): Promise<Booking> {
+        bodyDto.validate(queryDto.status);
+        const data = await this.bookingService.updateStatus(queryDto.bookingId, queryDto.status, bodyDto.toEntity());
 
         return data;
     }
