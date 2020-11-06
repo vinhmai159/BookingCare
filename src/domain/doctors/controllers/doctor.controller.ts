@@ -29,7 +29,7 @@ import { plainToClass } from 'class-transformer';
 import { Doctor } from '../entities';
 import { DeleteResult } from 'typeorm';
 import { DoctorServiceToken } from '../constants';
-import { DoctorGuard, jwt, AdminGuard } from '../../../common';
+import { DoctorGuard, jwt, AdminGuard, Auth, AuthMode } from '../../../common';
 import { extname } from 'path';
 
 @ApiTags('doctor')
@@ -54,7 +54,7 @@ export class DoctorController {
         description: 'The request is successfully.'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Post('/create')
     async createDoctor(@Body() doctorDto: CreateDoctorQueryDto): Promise<Doctor> {
         return await this.doctorService.createDoctor(plainToClass(Doctor, doctorDto), null);
@@ -67,7 +67,7 @@ export class DoctorController {
 
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Get('/:id')
     async getDoctorById(@jwt() doctor: Doctor): Promise<Doctor> {
         return await this.doctorService.getDoctorById(doctor.id);
@@ -83,14 +83,14 @@ export class DoctorController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Put('/update')
     async updateDoctor(@jwt() doctor: Doctor, @Body() updateDoctorDto: UpdateDoctorQueryDto): Promise<Doctor> {
         return await this.doctorService.updateDoctor(doctor.id, updateDoctorDto);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Put('/admin/:id/update')
     async updateDoctorForAdmin(
         @Param() paramDto: IdDoctorParamDto,
@@ -100,14 +100,14 @@ export class DoctorController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Delete('/:id/delete')
     async deleteDoctor(@Param() dto: IdDoctorParamDto): Promise<DeleteResult> {
         return await this.doctorService.deleteDoctor(dto.id);
     }
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({

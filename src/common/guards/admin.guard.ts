@@ -9,17 +9,19 @@ export class AdminGuard implements CanActivate {
         // const token = request.headers['x-access-token'] || request.headers.authorization;
         const token = ExtractJwt.fromAuthHeader('x-access-token')(request);
 
-        if (isNil(token)) {
+        if (!isNil(token)) {
             const admin = await this.validateToken(token);
-            // tslint:disable-next-line: no-conditional-assignment
-            if (admin.role !== 'admin') {
-                throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
-            }
 
-            request.user = admin;
-        } else {
-            throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
+            // if (admin.role !== 'admin') {
+            //     throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            // }
+            if (admin.role === 'admin') {
+                request.user = admin;
+            }
         }
+        //  else {
+        //     throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
+        // }
         return true;
     }
 

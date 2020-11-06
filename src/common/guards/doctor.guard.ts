@@ -9,17 +9,18 @@ export class DoctorGuard implements CanActivate {
         // const token = request.headers['x-access-token'] || request.headers.authorization;
         const token = ExtractJwt.fromAuthHeader('x-access-token')(request);
 
-        if (isNil(token)) {
+        if (!isNil(token)) {
             const doctor = await this.validateToken(token);
-            // tslint:disable-next-line: no-conditional-assignment
-            if (doctor.role !== 'doctor') {
-                throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            // if (doctor.role !== 'doctor') {
+            //     throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            // }
+            if (doctor.role === 'doctor') {
+                request.user = doctor;
             }
-
-            request.user = doctor;
-        } else {
-            throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
         }
+        //  else {
+        //     throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
+        // }
         return true;
     }
 

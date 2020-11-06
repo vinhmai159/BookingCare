@@ -1,6 +1,6 @@
 import { Controller, Get, HttpCode, Inject, Param, UseGuards, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { UserGuard } from '../../../common';
+import { Auth, AuthMode, UserGuard } from '../../../common';
 import { MedicalRecordServiceToken } from '../constants';
 import { MedicalRecord } from '../entities';
 import { IMedicalRecordService } from '../interfaces';
@@ -15,7 +15,7 @@ interface MedicalRecordResponse {
 
 @ApiBearerAuth()
 @ApiTags('/medical-record')
-@UseGuards(UserGuard)
+@Auth([AuthMode.USER_GUARD])
 @Controller('/medical-record')
 export class MedicalRecordController {
     constructor(

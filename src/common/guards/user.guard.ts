@@ -9,17 +9,19 @@ export class UserGuard implements CanActivate {
         // const token = request.headers['x-access-token'] || request.headers.authorization;
         const token = ExtractJwt.fromAuthHeader('x-access-token')(request);
 
-        if (isNil(token)) {
+        if (!isNil(token)) {
             const user = await this.validateToken(token);
 
-            if (user.role !== 'user') {
-                throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            // if (user.role !== 'user') {
+            //     throw new HttpException('The token have not permission!', HttpStatus.BAD_REQUEST);
+            // }
+            if (user.role === 'user') {
+                request.user = user;
             }
-
-            request.user = user;
-        } else {
-            throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
         }
+        // else {
+        //     throw new HttpException('Auth token is not supplied!', HttpStatus.BAD_REQUEST);
+        // }
         return true;
     }
 

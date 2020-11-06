@@ -1,20 +1,20 @@
-import { Controller, Inject, Post, HttpStatus, HttpCode, Body, Param, UseGuards, Delete, Put, Get } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { IUserService } from '../interfaces';
-import { UserServiceToken } from '../contants';
-import { User } from '../entities';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post, Put } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
+import { Auth, AuthMode, jwt } from '../../../common';
+import { Schedule } from '../../schedules';
+import { UserServiceToken } from '../contants';
 import {
+    BookingScheduleBodyDto,
     CreateUserBodyDto,
     GetUserBodyDto,
     IdUserParamDto,
     UpdateUserBodyDto,
-    UserLogInBodyDto,
-    BookingScheduleBodyDto
+    UserLogInBodyDto
 } from '../dto';
-import { plainToClass } from 'class-transformer';
-import { Schedule } from '../../schedules';
-import { UserGuard, jwt, AdminGuard } from '../../../common';
+import { User } from '../entities';
+import { IUserService } from '../interfaces';
 
 @Controller('user')
 @ApiTags('user')
@@ -52,7 +52,7 @@ export class UserController {
     })
     @HttpCode(HttpStatus.OK)
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Post()
     public async getUsers(@Body() bodydto?: GetUserBodyDto): Promise<any> {
         const [data, count] = await this.userService.getUsers(bodydto.name, bodydto.email, bodydto.address);
@@ -65,7 +65,7 @@ export class UserController {
         description: 'Get a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(UserGuard)
+    @Auth([AuthMode.USER_GUARD])
     @HttpCode(HttpStatus.OK)
     @Get('get-user-by-id')
     public async getUserById(@jwt() user: User): Promise<User> {
@@ -79,7 +79,7 @@ export class UserController {
         description: 'Get a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @HttpCode(HttpStatus.OK)
     @Get('/admin/:id/get-user-by-id')
     public async getUserByIdForAdmin(@Param() paramDto: IdUserParamDto): Promise<User> {
@@ -93,13 +93,10 @@ export class UserController {
         description: 'Update a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(UserGuard)
+    @Auth([AuthMode.USER_GUARD])
     @HttpCode(HttpStatus.OK)
     @Put('/:id/update')
-    public async updateUser(
-        @jwt() user: User,
-        @Body() bodyDto: UpdateUserBodyDto
-    ): Promise<User> {
+    public async updateUser(@jwt() user: User, @Body() bodyDto: UpdateUserBodyDto): Promise<User> {
         const exitUser = await this.userService.updateUser(user.id, plainToClass(User, bodyDto));
         return exitUser;
     }
@@ -110,7 +107,7 @@ export class UserController {
         description: 'Update a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @HttpCode(HttpStatus.OK)
     @Put('admin/:id/update')
     public async updateUserForAdmin(
@@ -127,7 +124,7 @@ export class UserController {
         description: 'Delete a user is successfully'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @HttpCode(HttpStatus.OK)
     @Delete('/:id/delete')
     public async deleteUser(@Param() paramDto: IdUserParamDto): Promise<DeleteResult> {
@@ -135,7 +132,7 @@ export class UserController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(UserGuard)
+    @Auth([AuthMode.USER_GUARD])
     @Post('/booking-schedule')
     public async bookingSchedule(@jwt() user: User, @Body() bodyDto: BookingScheduleBodyDto): Promise<Schedule> {
         const data = await this.userService.bookingSchedule(user.id, bodyDto.scheduleId);
