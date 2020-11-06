@@ -9,6 +9,7 @@ import { IBookingService } from '../interfaces';
 import { BookingRepository } from '../repositories';
 import { isNil } from 'lodash';
 import { v4 as uuid } from 'uuid';
+import { MedicalRecord } from '../../medical-record';
 
 @Injectable()
 export class BookingService implements IBookingService {
@@ -53,7 +54,7 @@ export class BookingService implements IBookingService {
     }
 
     public async getBookings(doctorId: string): Promise<Booking[]> {
-        const [data] = await this.bookingRepository.getBookings({doctorId});
+        const [data] = await this.bookingRepository.getBookings({ doctorId });
 
         if (isNil(data)) {
             throw new NotFoundException('The bookings were not found!');
@@ -62,16 +63,22 @@ export class BookingService implements IBookingService {
         return data;
     }
 
-    public async updateStatus(bookingId: string, status: BookingStatus): Promise<Booking> {
-        const booking = await this.bookingRepository.getBooking({id: bookingId});
+    public async updateStatus(
+        bookingId: string,
+        status: BookingStatus,
+        medicalRecord: MedicalRecord
+    ): Promise<Booking> {
+        const booking = await this.bookingRepository.getBooking({ id: bookingId });
 
         if (isNil(booking)) {
             throw new NotFoundException('The booking was not found!');
         }
 
         booking.status = status;
+        medicalRecord.id = uuid();
+        medicalRecord.user = booking.user;
 
-        const data = await this.bookingRepository.save(booking);
+        const data = await this.bookingRepository.UpdateStatus(booking, medicalRecord);
 
         return data;
     }
