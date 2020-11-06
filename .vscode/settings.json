@@ -1,8 +1,0 @@
-{
-    "team.remoteUrl": "",
-
-    // [Not for TFVC] Specify the team project to use when your source code repository is not hosted with Microsoft. Requires team.remoteUrl.
-    "team.teamProject": "BookingCare",
-    "editor.tabSize": 4,
-    "typescript.tsdk": "node_modules/typescript/lib"
-}

@@ -6,12 +6,12 @@ import { SaveTimeSlotDataQueryDto, TimeSlotIdParamDto, UpdateTimeSlotQueryDto } 
 import { TimeSlot } from '../entities';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AdminGuard } from '../../../common';
+import { AdminGuard, Auth, AuthMode } from '../../../common';
 
 @ApiTags('timeslot')
-@Controller('timeslot')
+@Controller('/timeslot')
 @ApiBearerAuth()
-@UseGuards(AdminGuard)
+@Auth([AuthMode.ADMIN_GUARD, AuthMode.DOCTOR_GUARD])
 export class TimeSlotController {
     constructor(
         @Inject(TimeSlotServiceToken)
@@ -23,8 +23,8 @@ export class TimeSlotController {
         return await this.timeSlotService.createTimeSlot(plainToClass(TimeSlot, timeSlotDto));
     }
 
-    @Post()
-    async getTimeSlot(@Body() dto: SaveTimeSlotDataQueryDto): Promise<TimeSlot[]> {
+    @Get()
+    async getTimeSlot(@Query() dto: SaveTimeSlotDataQueryDto): Promise<TimeSlot[]> {
         return await this.timeSlotService.getTimeSlot(dto.name);
     }
 

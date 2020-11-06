@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { DoctorGuard, jwt } from '../../../common';
+import { Auth, AuthMode, DoctorGuard, jwt } from '../../../common';
 import { Doctor } from '../../doctors';
 import { ScheduleServiceToken } from '../constants';
 import { IScheduleService } from '../interfaces';
@@ -22,14 +22,14 @@ export class ScheduleController {
     ) {}
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Post('create-many')
     async createSchedules(@jwt() doctor: Doctor, @Body() dto: UpdateScheduleParamDto): Promise<Schedule[]> {
         return await this.scheduleService.createSchedule(doctor, dto.calenderIds);
     }
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Post('create-one')
     async createSchedule(@jwt() doctor: Doctor, @Body() dto: CreateOneSchedulesQueryDto): Promise<Schedule> {
         return await this.scheduleService.createOneSchedule(doctor, dto.calenderId);
@@ -41,7 +41,7 @@ export class ScheduleController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Get('/get-schedule-for-doctor')
     async getScheduleByDoctor(@jwt() doctor: Doctor): Promise<ScheduleByDoctor[]> {
         return await this.scheduleService.getSchedulesByDoctor(doctor.id);
@@ -55,14 +55,14 @@ export class ScheduleController {
     // }
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Delete('delete/:calenderId')
     async deleteSchedules(@jwt() doctor: Doctor, @Param() dto: CreateScheduleParamDto): Promise<boolean> {
         return await this.scheduleService.deleteSchedulesByDoctor(doctor.id, dto.calenderId);
     }
 
     @ApiBearerAuth()
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Put('update/:calenderIds')
     async updateSchedulesByDoctor(@jwt() doctor: Doctor, @Body() dto: UpdateScheduleParamDto): Promise<Schedule[]> {
         return await this.scheduleService.updateSchedulesForDoctor(doctor, dto.calenderIds);

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { DoctorGuard, jwt, UserGuard } from '../../../common';
+import { Auth, AuthMode, DoctorGuard, jwt, UserGuard } from '../../../common';
 import { Doctor } from '../../doctors';
 import { User } from '../../users';
 import { BookingServiceToken } from '../constants';
@@ -23,7 +23,7 @@ export class BookingController {
         description: 'Booking schedule is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @UseGuards(UserGuard)
+    @Auth([AuthMode.USER_GUARD])
     @Post()
     public async createBooking(@jwt() user: User, @Query() dto: ScheduleQueryDto): Promise<Booking> {
         const data = await this.bookingService.createBooking(user.id, dto.scheduleId);
@@ -37,7 +37,7 @@ export class BookingController {
         description: 'get schedule was Booked is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @UseGuards(UserGuard)
+    @Auth([AuthMode.USER_GUARD])
     @Get('/get-one')
     public async getBooking(@jwt() user: User, @Query() dto: BookingQueryDto): Promise<Booking> {
         const data = await this.bookingService.getBooking(dto.bookingId, user.id, dto.scheduleId);
@@ -51,7 +51,7 @@ export class BookingController {
         description: 'get schedule were Booked is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Get('/get-many')
     public async getBookings(@jwt() doctor: Doctor): Promise<Booking[]> {
         const data = await this.bookingService.getBookings(doctor.id);
@@ -65,7 +65,7 @@ export class BookingController {
         description: 'update status of schedule was booked is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @UseGuards(DoctorGuard)
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Put('/:bookingId')
     public async updateStatus(
         @Query() queryDto: UpdateStatusQueryDto,

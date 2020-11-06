@@ -6,7 +6,7 @@ import { CalenderIdParamDto, SaveCalenderDataDto, UpdateCalenderBodyDto, SearchC
 import { Calender } from '../entities';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AdminGuard } from '../../../common';
+import { AdminGuard, Auth, AuthMode } from '../../../common';
 
 @ApiTags('calender')
 @Controller('calender')
@@ -17,7 +17,7 @@ export class CalenderController {
     ) {}
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Post('create')
     async createCalender(@Body() calenderDto: SaveCalenderDataDto): Promise<Calender> {
         return await this.calenderService.createCalender(calenderDto);
@@ -34,14 +34,14 @@ export class CalenderController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Delete('delete/:id')
     async deleteCalender(@Param() dto: CalenderIdParamDto): Promise<DeleteResult> {
         return await this.calenderService.deleteCalender(dto.id);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Put('update/:id')
     async updateCalender(
         @Param() paramDto: CalenderIdParamDto,

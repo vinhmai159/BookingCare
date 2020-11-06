@@ -6,7 +6,7 @@ import { AdminBodyDto, AdminLogInDto, IdAdminParamDto, CreateAdminBodyDto } from
 import { Admin } from '../entities';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AdminGuard } from '../../../common';
+import { AdminGuard, Auth, AuthMode } from '../../../common';
 
 @Controller('api/admin')
 @ApiTags('Admin')
@@ -17,7 +17,7 @@ export class AdminController {
     ) {}
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Post('create')
     public async createAdmin(@Body() bodyDto: CreateAdminBodyDto): Promise<Admin> {
         return await this.adminService.createAdmin(plainToClass(Admin, bodyDto));
@@ -29,21 +29,21 @@ export class AdminController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Post()
     public async getAdmins(@Body() bodyDto: AdminBodyDto): Promise<[Admin[], number]> {
         return await this.adminService.getAdmins(bodyDto.name);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Delete('/:id/delete')
     public async deleteAdmin(@Param() paramDto: IdAdminParamDto): Promise<DeleteResult> {
         return await this.adminService.deleteAdmin(paramDto.id);
     }
 
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Put('/:id/update')
     public async updateAdmin(@Param() paramDto: IdAdminParamDto, @Body() bodyDto: AdminBodyDto): Promise<Admin> {
         return await this.adminService.updateAdmin(paramDto.id, plainToClass(Admin, bodyDto));

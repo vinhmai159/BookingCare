@@ -6,7 +6,7 @@ import { Expertise } from '../entities';
 import { CreateExpertiseBodyDto, GetExpertiseBodyDto, IdExpertiseParamDto } from '../dto';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AdminGuard } from '../../../common';
+import { AdminGuard, Auth, AuthMode } from '../../../common';
 
 @ApiTags('expertise')
 @Controller('expertise')
@@ -21,7 +21,7 @@ export class ExpertiseController {
         description: 'The request is successfully.'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Post('create')
     async createExpertise(@Body() bodyDto: CreateExpertiseBodyDto): Promise<Expertise> {
         return await this.expertiseService.createExpertise(plainToClass(Expertise, bodyDto));
@@ -41,7 +41,7 @@ export class ExpertiseController {
         description: 'The request is successfully.'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Delete('/:id/delete')
     async deleteExpertise(@Param() paramDto: IdExpertiseParamDto): Promise<DeleteResult> {
         return await this.expertiseService.deleteExpertise(paramDto.id);
@@ -52,7 +52,7 @@ export class ExpertiseController {
         description: 'The request is successfully.'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Put('/:id/update')
     async updateExpertise(
         @Param() paramDto: IdExpertiseParamDto,

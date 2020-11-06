@@ -6,7 +6,7 @@ import { Hospital } from '../entities';
 import { CreateHospitalBodyDto, GetHospitalQueryDto, HospitalParamDto, UpdateHospitalBodyDto } from '../dto';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
-import { AdminGuard } from '../../../common';
+import { AdminGuard, Auth, AuthMode } from '../../../common';
 
 @ApiTags('hospital')
 @Controller('/hospital')
@@ -21,7 +21,7 @@ export class HospitalController {
         description: 'The request is successfully.'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Post('create')
     async createHospital(@Body() bodyDto: CreateHospitalBodyDto): Promise<Hospital> {
         return await this.hospitalService.createHospital(plainToClass(Hospital, bodyDto));
@@ -41,7 +41,7 @@ export class HospitalController {
         description: 'The request is successfully.'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Delete('/:hospitalId')
     async deleteHospital(@Param() paramDto: HospitalParamDto): Promise<DeleteResult> {
         return await this.hospitalService.deleteHospital(paramDto.hospitalId);
@@ -52,7 +52,7 @@ export class HospitalController {
         description: 'The request is successfully.'
     })
     @ApiBearerAuth()
-    @UseGuards(AdminGuard)
+    @Auth([AuthMode.ADMIN_GUARD])
     @Put('/:hospitalId')
     async updateHospital(
         @Param() paramDto: HospitalParamDto,
