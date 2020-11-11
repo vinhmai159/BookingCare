@@ -33,67 +33,67 @@ export class CalenderService implements ICalenderService {
 
     async getCalender(day: DayOfWeek, timeSlotName: string): Promise<any> {
         const calenders = await this.calenderRepository.getCalender(day, timeSlotName);
-        const result = {
-            MONDAY: [],
-            TUESDAY: [],
-            WEDNESDAY: [],
-            THURSDAY: [],
-            FRIDAY: [],
-            SATURDAY: [],
-            SUNDAY: []
-        };
+        // const result = {
+        //     MONDAY: [],
+        //     TUESDAY: [],
+        //     WEDNESDAY: [],
+        //     THURSDAY: [],
+        //     FRIDAY: [],
+        //     SATURDAY: [],
+        //     SUNDAY: []
+        // };
 
-        for (const calender of calenders) {
-            if (calender.day === DayOfWeek.MONDAY) {
-                result.MONDAY.push({
-                    calenderId: calender.id,
-                    timeSlot: calender.timeslot.name
-                });
-            }
+        // for (const calender of calenders) {
+        //     if (calender.day === DayOfWeek.MONDAY) {
+        //         result.MONDAY.push({
+        //             calenderId: calender.id,
+        //             timeSlot: calender.timeslot.name
+        //         });
+        //     }
 
-            if (calender.day === DayOfWeek.TUESDAY) {
-                result.TUESDAY.push({
-                    calenderId: calender.id,
-                    timeSlot: calender.timeslot.name
-                });
-            }
+        //     if (calender.day === DayOfWeek.TUESDAY) {
+        //         result.TUESDAY.push({
+        //             calenderId: calender.id,
+        //             timeSlot: calender.timeslot.name
+        //         });
+        //     }
 
-            if (calender.day === DayOfWeek.WEDNESDAY) {
-                result.WEDNESDAY.push({
-                    calenderId: calender.id,
-                    timeSlot: calender.timeslot.name
-                });
-            }
+        //     if (calender.day === DayOfWeek.WEDNESDAY) {
+        //         result.WEDNESDAY.push({
+        //             calenderId: calender.id,
+        //             timeSlot: calender.timeslot.name
+        //         });
+        //     }
 
-            if (calender.day === DayOfWeek.THURSDAY) {
-                result.THURSDAY.push({
-                    calenderId: calender.id,
-                    timeSlot: calender.timeslot.name
-                });
-            }
+        //     if (calender.day === DayOfWeek.THURSDAY) {
+        //         result.THURSDAY.push({
+        //             calenderId: calender.id,
+        //             timeSlot: calender.timeslot.name
+        //         });
+        //     }
 
-            if (calender.day === DayOfWeek.FRIDAY) {
-                result.FRIDAY.push({
-                    calenderId: calender.id,
-                    timeSlot: calender.timeslot.name
-                });
-            }
+        //     if (calender.day === DayOfWeek.FRIDAY) {
+        //         result.FRIDAY.push({
+        //             calenderId: calender.id,
+        //             timeSlot: calender.timeslot.name
+        //         });
+        //     }
 
-            if (calender.day === DayOfWeek.SATURDAY) {
-                result.SATURDAY.push({
-                    calenderId: calender.id,
-                    timeSlot: calender.timeslot.name
-                });
-            }
+        //     if (calender.day === DayOfWeek.SATURDAY) {
+        //         result.SATURDAY.push({
+        //             calenderId: calender.id,
+        //             timeSlot: calender.timeslot.name
+        //         });
+        //     }
 
-            if (calender.day === DayOfWeek.SUNDAY) {
-                result.SUNDAY.push({
-                    calenderId: calender.id,
-                    timeSlot: calender.timeslot.name
-                });
-            }
-        }
-        return result;
+        //     if (calender.day === DayOfWeek.SUNDAY) {
+        //         result.SUNDAY.push({
+        //             calenderId: calender.id,
+        //             timeSlot: calender.timeslot.name
+        //         });
+        //     }
+        // }
+        return calenders;
     }
 
     async getCalenderById(id: string): Promise<Calender> {
