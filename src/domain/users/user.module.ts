@@ -23,7 +23,7 @@ const serviceProvides = [
         JwtModule.register({
             secret: 'bookingcare',
             signOptions: {
-                expiresIn: 3600 * 24
+                expiresIn: 3600 * 24 * 100
             }
         }),
         TypeOrmModule.forFeature([User, UserRepository]),

@@ -4,6 +4,7 @@ import { MedicalRecord } from '../entities';
 import { IMedicalRecordService } from '../interfaces';
 import { MedicalRecordRepository } from '../repositories';
 import { isNil } from 'lodash';
+import * as Moment from 'moment';
 
 @Injectable()
 export class MedicalRecordService implements IMedicalRecordService {

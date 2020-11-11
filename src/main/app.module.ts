@@ -1,7 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ErrorInterceptor, LoggingInterceptor } from '../common';
-import { AdminModule, DoctorsModule, ExpertiseModule, SchedulesModule, UserModule, BookingModule, MedicalRecordModule } from '../domain';
+import {
+    AdminModule,
+    DoctorsModule,
+    ExpertiseModule,
+    SchedulesModule,
+    UserModule,
+    BookingModule,
+    MedicalRecordModule,
+    ArticleModel
+} from '../domain';
 import { HospitalModule } from '../domain/hospital/hospital.module';
 import { AppController } from './controllers';
 import { AppService } from './services';
@@ -36,6 +45,7 @@ import { AppService } from './services';
         HospitalModule,
         BookingModule,
         MedicalRecordModule,
+        ArticleModel,
         AdminModule
     ],
     controllers: [AppController],

@@ -7,7 +7,7 @@ import { MedicalRecord } from '../../medical-record/entities/medical-record.enti
 
 export interface BookingQueryOptions {
     id?: string;
-    ids?: string;
+    ids?: string[];
     userId?: string;
     scheduleId?: string;
     doctorId?: string;

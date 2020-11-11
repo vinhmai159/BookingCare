@@ -7,6 +7,8 @@ import { Doctor } from './entities';
 import { DoctorServiceToken } from './constants';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { CqrsModule } from '@nestjs/cqrs';
+import { DoctorQueryHandlers } from './queries/handlers';
 
 const serviceProviders = [
     {
@@ -24,10 +26,11 @@ const serviceProviders = [
                 expiresIn: 3600 * 24
             }
         }),
-        TypeOrmModule.forFeature([Doctor, DoctorRepository])
+        TypeOrmModule.forFeature([Doctor, DoctorRepository]),
+        CqrsModule
     ],
     controllers: [DoctorController],
-    providers: [...serviceProviders],
+    providers: [...serviceProviders, ...DoctorQueryHandlers],
     exports: [...serviceProviders]
 })
 export class DoctorsModule {}

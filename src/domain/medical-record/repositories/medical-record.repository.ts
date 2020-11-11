@@ -23,7 +23,7 @@ export class MedicalRecordRepository extends Repository<MedicalRecord> {
     }
 
     public async getMedicalRecords(options: MedicalRecordOptions): Promise<[MedicalRecord[], number]> {
-        const queryBuilder = this.createQueryBuilder('MedicalRecord');
+        const queryBuilder = this.createQueryBuilder('MedicalRecord').leftJoinAndSelect('MedicalRecord.user', 'user');
 
         this.applyQueryOptions(queryBuilder, options);
 
@@ -41,7 +41,7 @@ export class MedicalRecordRepository extends Repository<MedicalRecord> {
         }
 
         if (!isNil(options.userId)) {
-            queryBuilder.andWhere('user.id LIKE :userId', { userId: options.userId });
+            queryBuilder.andWhere('user.id = :userId', { userId: options.userId });
         }
 
         if (!isNil(options.fromDate) && !isNil(options.toDate)) {
