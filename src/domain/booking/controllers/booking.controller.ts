@@ -1,10 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth, AuthMode, DoctorGuard, jwt, UserGuard } from '../../../common';
 import { Doctor } from '../../doctors';
 import { User } from '../../users';
 import { BookingServiceToken } from '../constants';
-import { BookingQueryDto, CreateMedicalRecordDto, ScheduleQueryDto, UpdateStatusQueryDto } from '../dto';
+import { BookingQueryDto, CompleteMedicalRecordQueryDto, CreateMedicalRecordDto, ScheduleQueryDto } from '../dto';
 import { Booking } from '../entities';
 import { IBookingService } from '../interfaces';
 
@@ -37,10 +37,10 @@ export class BookingController {
         description: 'get schedule was Booked is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @Auth([AuthMode.USER_GUARD])
+    @Auth([AuthMode.USER_GUARD, AuthMode.DOCTOR_GUARD])
     @Get('/get-one')
-    public async getBooking(@jwt() user: User, @Query() dto: BookingQueryDto): Promise<Booking> {
-        const data = await this.bookingService.getBooking(dto.bookingId, user.id, dto.scheduleId);
+    public async getBooking(@Query() dto: BookingQueryDto): Promise<Booking> {
+        const data = await this.bookingService.getBooking(dto.bookingId, dto.scheduleId);
 
         return data;
     }
@@ -66,13 +66,13 @@ export class BookingController {
     })
     @HttpCode(HttpStatus.OK)
     @Auth([AuthMode.DOCTOR_GUARD])
-    @Put('/:bookingId')
+    @Put('/complete-medical-record')
     public async updateStatus(
-        @Query() queryDto: UpdateStatusQueryDto,
+        @Query() queryDto: CompleteMedicalRecordQueryDto,
         @Body() bodyDto: CreateMedicalRecordDto
     ): Promise<Booking> {
         bodyDto.validate(queryDto.status);
-        const data = await this.bookingService.updateStatus(queryDto.bookingId, queryDto.status, bodyDto.toEntity());
+        const data = await this.bookingService.updateStatus(queryDto.bookingId, queryDto.scheduleId, queryDto.status, bodyDto.toEntity());
 
         return data;
     }

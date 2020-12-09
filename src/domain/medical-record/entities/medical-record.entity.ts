@@ -12,7 +12,7 @@ import { User } from '../../users';
 
 @Entity('MedicalRecord', {
     orderBy: {
-        createdAt: 'ASC'
+        createAt: 'ASC'
     }
 })
 export class MedicalRecord extends BaseEntity {

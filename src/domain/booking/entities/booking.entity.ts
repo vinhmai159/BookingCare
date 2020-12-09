@@ -6,6 +6,7 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToMany,
     OneToOne,
     PrimaryColumn,
     UpdateDateColumn
@@ -29,7 +30,7 @@ export class Booking extends BaseEntity {
     @JoinColumn()
     user: User;
 
-    @OneToOne(() => Schedule)
+    @ManyToOne(() => Schedule)
     @JoinColumn()
     schedule: Schedule;
 

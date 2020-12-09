@@ -17,15 +17,15 @@ export class CreateMedicalRecordDto {
 
     public validate(status: BookingStatus): void {
         if (status === BookingStatus.DONE) {
-            if (isNil(this.symptoms)) {
+            if (isNil(this.symptoms) || this.symptoms === '') {
                 throw new BadRequestException('This symptoms should not empty with status DONE.');
             }
 
-            if (isNil(this.diagnostic)) {
+            if (isNil(this.diagnostic) || this.diagnostic === '') {
                 throw new BadRequestException('This diagnostic should not empty with status DONE.');
             }
 
-            if (isNil(this.prescription)) {
+            if (isNil(this.prescription) || this.prescription === '') {
                 throw new BadRequestException('This prescription should not empty with status DONE.');
             }
         }

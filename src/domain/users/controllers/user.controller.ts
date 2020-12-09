@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
@@ -53,9 +53,9 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     @ApiBearerAuth()
     @Auth([AuthMode.ADMIN_GUARD])
-    @Post()
-    public async getUsers(@Body() bodydto?: GetUserBodyDto): Promise<any> {
-        const [data, count] = await this.userService.getUsers(bodydto.name, bodydto.email, bodydto.address);
+    @Get()
+    public async getUsers(@Query() queryDto?: GetUserBodyDto): Promise<any> {
+        const [data, count] = await this.userService.getUsers(queryDto.name, queryDto.email, queryDto.address);
         return { data, count };
     }
 
@@ -95,7 +95,7 @@ export class UserController {
     @ApiBearerAuth()
     @Auth([AuthMode.USER_GUARD])
     @HttpCode(HttpStatus.OK)
-    @Put('/:id/update')
+    @Put('/update')
     public async updateUser(@jwt() user: User, @Body() bodyDto: UpdateUserBodyDto): Promise<User> {
         const exitUser = await this.userService.updateUser(user.id, plainToClass(User, bodyDto));
         return exitUser;
@@ -126,7 +126,7 @@ export class UserController {
     @ApiBearerAuth()
     @Auth([AuthMode.ADMIN_GUARD])
     @HttpCode(HttpStatus.OK)
-    @Delete('/:id/delete')
+    @Delete('/:id')
     public async deleteUser(@Param() paramDto: IdUserParamDto): Promise<DeleteResult> {
         return await this.userService.deleteUser(paramDto.id);
     }

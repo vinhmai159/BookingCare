@@ -1,6 +1,5 @@
 import { User } from '../entities';
 import { Repository, EntityRepository, DeleteResult } from 'typeorm';
-import { Schedule } from '../../schedules/entities/schedule.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -12,46 +11,44 @@ export class UserRepository extends Repository<User> {
         const users = this.createQueryBuilder('user');
 
         if (name) {
-            users.andWhere('user.fistName LIKE :name OR user.lastName LIKE :name', {name: `%${name}%`})
+            users.andWhere('user.fistName LIKE :name OR user.lastName LIKE :name', { name: `%${name}%` });
         }
 
         if (email) {
-            users.andWhere('user.email LIKE :email', {email: `%${email}%`})
+            users.andWhere('user.email LIKE :email', { email: `%${email}%` });
         }
 
         if (address) {
-            users.andWhere('user.address LIKE :address', {address: `%${address}%`})
+            users.andWhere('user.address LIKE :address', { address: `%${address}%` });
         }
 
-        users.orderBy('user.fistName')
+        users
+            .orderBy('user.fistName')
             .addOrderBy('user.lastname')
             .addOrderBy('user.email')
-            .addOrderBy('user.address')
+            .addOrderBy('user.address');
 
         return await users.getManyAndCount();
     }
 
     public async getUserById(id: string): Promise<User> {
         return await this.createQueryBuilder('user')
-                            .where('user.id = :id', {id})
-                            .leftJoinAndSelect('user.schedule', 'schedule')
-                            .leftJoinAndSelect('schedule.doctor', 'doctor')
-                            .leftJoinAndSelect('schedule.calender', 'calender')
-                            .leftJoinAndSelect('calender.timeslot', 'timeslot')
-                            .getOne();
+            .where('user.id = :id', { id })
+            // .leftJoinAndSelect('user.booking', 'Booking')
+            .getOne();
     }
 
     public async getUserByEmail(email: string): Promise<User> {
         return await this.createQueryBuilder('user')
-                            .where('user.email = :email', {email})
-                            .getOne();
+            .where('user.email = :email', { email })
+            .getOne();
     }
 
     public async deleteUser(id: string): Promise<DeleteResult> {
         return await this.createQueryBuilder('user')
-                            .delete()
-                            .from(User)
-                            .where('user.id = :id', {id})
-                            .execute();
+            .delete()
+            .from(User)
+            .where('users.id = :id', { id })
+            .execute();
     }
 }

@@ -11,11 +11,8 @@ export interface IArticleService {
     getArticle(articleId: string): Article | Promise<Article>;
 
     getArticles(
-        author?: string,
-        title?: string,
-        content?: string,
-        category?: string,
-        tag?: string
+        authorId?: string,
+        keyword?: string
     ): [Article[], number] | Promise<[Article[], number]>;
 
     updateArticle(
@@ -26,5 +23,5 @@ export interface IArticleService {
         tagNames: string[]
     ): Article | Promise<Article>;
 
-    deleteArticle(articleId: string): boolean | Promise<boolean>;
+    deleteArticle(articleId: string, doctorId?: string): boolean | Promise<boolean>;
 }

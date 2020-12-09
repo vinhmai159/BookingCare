@@ -40,15 +40,7 @@ export class UserService implements IUserService {
     public async getUserById(userId: string): Promise<any> {
         const data = await this.userRepository.getUserById(userId);
 
-        const day = data.schedule.calender.day;
-        const timeSlot = data.schedule.calender.timeslot.name;
-        const schedule = {
-            day,
-            timeSlot
-        };
         const { id, email, fistName, lastName, birthday, address, gender } = data;
-
-        const { doctor } = data.schedule;
 
         const result = {
             id,
@@ -57,9 +49,7 @@ export class UserService implements IUserService {
             lastName,
             birthday,
             address,
-            gender,
-            doctor,
-            schedule
+            gender
         };
 
         return result;
@@ -86,7 +76,7 @@ export class UserService implements IUserService {
         }
 
         if (user.birthday) {
-            exitsUser.birthday = user.birthday;
+            exitsUser.birthday = Moment(user.birthday).toDate();;
         }
 
         if (user.gender) {
@@ -101,46 +91,47 @@ export class UserService implements IUserService {
     }
 
     public async bookingSchedule(id: string, scheduleId: string): Promise<Schedule> {
-        const user = await this.userRepository.getUserById(id);
-        // dùng query bus qua bên Schedule đẻ lấy, k dc impỏt repossiroty ỏ ngoài domain của nó
-        const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(
-            new GetScheduleByIdQuery(scheduleId)
-        );
+        // const user = await this.userRepository.getUserById(id);
+        // // dùng query bus qua bên Schedule đẻ lấy, k dc impỏt repossiroty ỏ ngoài domain của nó
+        // const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(
+        //     new GetScheduleByIdQuery(scheduleId)
+        // );
 
-        if (!isNil(user.schedule)) {
-            throw new BadRequestException('Can not booking schedule, You have a schedule.');
-        }
+        // if (!isNil(user.schedule)) {
+        //     throw new BadRequestException('Can not booking schedule, You have a schedule.');
+        // }
 
-        if (schedule.busy) {
-            throw new BadRequestException('The schedule of doctor is busy');
-        }
+        // if (schedule.busy) {
+        //     throw new BadRequestException('The schedule of doctor is busy');
+        // }
 
-        const current = new Date();
-        const hourCurrentString = Moment(current).format('hh');
+        // const current = new Date();
+        // const hourCurrentString = Moment(current).format('hh');
 
-        const hourCurrent = Number(hourCurrentString);
+        // const hourCurrent = Number(hourCurrentString);
 
-        const exitTimeSlot = schedule.calender.timeslot.name;
+        // const exitTimeSlot = schedule.calender.timeslot.name;
 
-        const timeSlotArr = exitTimeSlot.split(':');
+        // const timeSlotArr = exitTimeSlot.split(':');
 
-        const timeSlot = Number(timeSlotArr[0]);
+        // const timeSlot = Number(timeSlotArr[0]);
 
-        if (timeSlot < hourCurrent - 2) {
-            throw new BadRequestException('Can not booking the schedule for doctor');
-        }
+        // if (timeSlot < hourCurrent - 2) {
+        //     throw new BadRequestException('Can not booking the schedule for doctor');
+        // }
 
-        user.schedule = schedule;
-        await this.userRepository.saveUser(user);
-        schedule.busy = true;
-        await this.queryBus.execute<SaveScheduleQuery, Schedule>(new SaveScheduleQuery(schedule)); // save
-        return schedule;
+        // user.schedule = schedule;
+        // await this.userRepository.saveUser(user);
+        // schedule.busy = true;
+        // await this.queryBus.execute<SaveScheduleQuery, Schedule>(new SaveScheduleQuery(schedule)); // save
+        // return schedule;
+        return null;
     }
 
     public async userLogin(email: string, password: string): Promise<{ accessToken: string }> {
         const user = await this.userRepository.getUserByEmail(email);
         if (user && (await this.validatePassword(password, user.password))) {
-            const { id, email, address, gender, birthday, fistName, lastName, schedule, createAt, updateAt } = user;
+            const { id, email, address, gender, birthday, fistName, lastName, createAt, updateAt } = user;
             const role = 'user';
             const payload = {
                 id,
@@ -150,7 +141,6 @@ export class UserService implements IUserService {
                 birthday,
                 fistName,
                 lastName,
-                schedule,
                 role,
                 createAt,
                 updateAt

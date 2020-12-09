@@ -1,8 +1,7 @@
-import {Expose} from 'class-transformer';
-import {IsNotEmpty, Matches, MaxLength, MinLength, Validate, IsOptional} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
+import { IsNotEmpty, IsOptional, Matches, MaxLength, MinLength, Validate } from 'class-validator';
 import { Unique } from 'typeorm';
-import { Expertise } from '../../../expertise';
 
 export class CreateDoctorQueryDto {
     @Expose()
@@ -26,7 +25,12 @@ export class CreateDoctorQueryDto {
     @Expose()
     @ApiProperty()
     @IsOptional()
-    expertises: Expertise[];
+    expertiseId: string;
+
+    @Expose()
+    @ApiProperty()
+    @IsOptional()
+    hospitalId: string;
 
     @Expose()
     @MaxLength(30)
@@ -39,10 +43,7 @@ export class CreateDoctorQueryDto {
     @Expose()
     @MaxLength(20)
     @MinLength(6)
-    @Matches(
-        /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-        {message: 'Password too weak!!!!'})
+    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { message: 'Password too weak!!!!' })
     @ApiProperty()
     password: string;
-
 }

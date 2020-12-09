@@ -1,14 +1,12 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isNil } from 'lodash';
+import { v4 as uuid } from 'uuid';
+import { Doctor, GetDoctorQuery } from '../../doctors';
 import { Article } from '../entities';
 import { IArticleService } from '../interfaces';
 import { ArticleRepository, CategoryRepository, TagRepository } from '../repository';
-import { v4 as uuid } from 'uuid';
-import { Doctor, GetDoctorQuery } from '../../doctors';
-import { Admin, GetAdminQuery } from '../../admin';
-import { QueryBus } from '@nestjs/cqrs';
-import { AuthorType } from '../constants';
 
 @Injectable()
 export class ArticleService implements IArticleService {
@@ -28,11 +26,10 @@ export class ArticleService implements IArticleService {
         categoryNames: string[],
         tagNames: string[]
     ): Promise<Article> {
-        const [author, authorType] = await this.getAuthor(authorId);
+        const author = await this.getAuthor(authorId);
 
         article.id = uuid();
-        article.author = author;
-        article.authorType = AuthorType[authorType];
+        article.doctor = author;
 
         const [categories] = await this.categoryRepository.getCategories({ names: categoryNames });
         article.categories = categories;
@@ -44,30 +41,21 @@ export class ArticleService implements IArticleService {
         return existedArticle;
     }
 
-    private async getAuthor(authorId: string): Promise<[Doctor | Admin, string]> {
+    private async getAuthor(authorId: string): Promise<Doctor> {
         const doctor = await this.queryBus.execute<GetDoctorQuery, Doctor>(new GetDoctorQuery(authorId));
 
-        if (!isNil(doctor)) {
-            const authorType = AuthorType.DOCTOR;
-            return [doctor, authorType];
+        if (isNil(doctor)) {
+            throw new NotFoundException('This author invalid!');
         }
 
-        const admin = await this.queryBus.execute<GetAdminQuery, Doctor>(new GetAdminQuery(authorId));
-
-        if (!isNil(admin)) {
-            const authorType = AuthorType.DOCTOR;
-            return [admin, authorType];
-        }
+        return doctor;
     }
 
     public async getArticles(
-        author?: string,
-        title?: string,
-        content?: string,
-        category?: string,
-        tag?: string
+        authorId?: string,
+        keyword?: string
     ): Promise<[Article[], number]> {
-        const data = await this.articleRepository.getArticles({ title, content, category, tag });
+        const data = await this.articleRepository.getArticles({ keyword, authorId });
 
         return data;
     }
@@ -104,16 +92,16 @@ export class ArticleService implements IArticleService {
         return updateArticle;
     }
 
-    public async deleteArticle(articleId: string): Promise<boolean> {
-        await this.getArticle(articleId);
+    public async deleteArticle(articleId: string, doctorId?: string): Promise<boolean> {
+        await this.getArticle(articleId, doctorId);
 
         await this.articleRepository.delete(articleId);
 
         return true;
     }
 
-    public async getArticle(id: string): Promise<Article> {
-        const article = await this.articleRepository.getArticle({ id });
+    public async getArticle(id: string, authorId?: string): Promise<Article> {
+        const article = await this.articleRepository.getArticle({ id, authorId });
 
         if (isNil(article)) {
             throw new NotFoundException('This article was not found');

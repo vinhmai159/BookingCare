@@ -14,7 +14,7 @@ import { Category } from './category.entity';
 import { Tag } from './tag.entity';
 import { Doctor } from '../../doctors';
 import { Admin } from '../../admin';
-import { AuthorType } from '../constants';
+import { AuthorType, ArticleStatus } from '../constants';
 
 @Entity('Article', {
     orderBy: {
@@ -25,16 +25,9 @@ export class Article extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ManyToOne(() => Doctor || Admin)
+    @ManyToOne(() => Doctor )
     @JoinColumn()
-    author: Doctor | Admin;
-
-    @Column({
-        type: 'varchar',
-        length: 255,
-        nullable: true
-    })
-    authorType: AuthorType;
+    doctor: Doctor;
 
     @Column({
         type: 'varchar',
@@ -47,6 +40,13 @@ export class Article extends BaseEntity {
         nullable: true
     })
     content: string;
+
+    @Column({
+        type: 'varchar',
+        length: 255,
+        default: ArticleStatus.PENDING
+    })
+    status: ArticleStatus;
 
     @ManyToMany(() => Category)
     @JoinTable()

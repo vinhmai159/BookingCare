@@ -22,8 +22,9 @@ export class ScheduleRepository extends Repository<Schedule> {
         const scheduleByDoctor = this.createQueryBuilder('schedule')
             .where('schedule.doctorId = :doctorId', { doctorId })
             .leftJoinAndSelect('schedule.calender', 'calender')
-            .leftJoinAndSelect('schedule.user', 'user')
-            .leftJoinAndSelect('calender.timeslot', 'timeslot');
+            .leftJoinAndSelect('calender.timeslot', 'timeslot')
+            .leftJoinAndSelect('schedule.bookings', 'Booking')
+            .leftJoinAndSelect('Booking.user', 'user');
 
         if (day) {
             scheduleByDoctor.andWhere('calender.day = :day', { day });

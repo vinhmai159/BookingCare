@@ -26,7 +26,6 @@ export class CategoryRepository extends Repository<Category> {
 
         this.applyQueryOptions(queryBuilder, options);
 
-        queryBuilder.addOrderBy('category.updateAt', 'DESC');
 
         return await queryBuilder.getManyAndCount();
     }
@@ -44,7 +43,7 @@ export class CategoryRepository extends Repository<Category> {
         }
 
         if (!isNil(options.name)) {
-            queryBuilder.andWhere('Category.name LIKE :name', { name: `${options.name}` });
+            queryBuilder.andWhere('Category.name LIKE :name', { name: `%${options.name}%` });
         }
 
         if (!isNil(options.names)) {

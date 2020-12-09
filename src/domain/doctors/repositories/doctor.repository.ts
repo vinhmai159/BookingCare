@@ -12,7 +12,7 @@ export class DoctorRepository extends Repository<Doctor> {
             .leftJoinAndSelect('doctor.hospital', 'hospital');
 
         if (!isNull(name) && !isUndefined(name)) {
-            doctor.andWhere('doctor.fistName LIKE :name OR doctor.lastName LIKE :name', {
+            doctor.andWhere('(doctor.fistName LIKE :name OR doctor.lastName LIKE :name)', {
                 name: `%${name}%`
             });
         }
@@ -34,6 +34,8 @@ export class DoctorRepository extends Repository<Doctor> {
 
     async getDoctorById(id: string): Promise<Doctor> {
         return await this.createQueryBuilder('doctor')
+            .leftJoinAndSelect('doctor.expertise', 'expertise')
+            .leftJoinAndSelect('doctor.hospital', 'hospital')
             .where('doctor.id LIKE :id', { id })
             .getOne();
     }
@@ -48,22 +50,6 @@ export class DoctorRepository extends Repository<Doctor> {
             .from(Doctor)
             .where('doctor.id LIKE :id', { id })
             .execute();
-    }
-
-    async updateDoctor(id: string, doctor: UpdateDoctorQueryDto): Promise<Doctor> {
-        let doc;
-        try {
-            doc = await this.getDoctorById(id);
-        } catch {
-            throw new NotFoundException('Can not found a doctor');
-        }
-        doc.fistName = doctor.fistName;
-        doc.lastName = doctor.lastName;
-        // doc.avatar = doctor.avat
-        doc.description = doctor.description;
-        doc.addressDetail = doctor.addressDetail;
-        doc.expertise = doctor.expertiseId;
-        return this.save(doc);
     }
 
     async getDoctorByEmail(email: string): Promise<Doctor> {

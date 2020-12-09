@@ -29,9 +29,9 @@ export class ArticleController {
         description: 'Create schedule is successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @Auth([AuthMode.DOCTOR_GUARD, AuthMode.ADMIN_GUARD])
+    @Auth([AuthMode.DOCTOR_GUARD])
     @Post()
-    public async createArticle(@jwt() author: Doctor | Admin, @Body() bodyDto: CreateArticleBodyDto): Promise<Article> {
+    public async createArticle(@jwt() author: Doctor, @Body() bodyDto: CreateArticleBodyDto): Promise<Article> {
         const data = await this.articleService.createArticle(
             author.id,
             plainToClass(Article, bodyDto),
@@ -45,14 +45,17 @@ export class ArticleController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: Article,
-        description: 'Get schedule is successfully'
+        description: 'Get articles are successfully'
     })
     @HttpCode(HttpStatus.OK)
-    @Get('/:articleId')
-    public async getArticle(@Param() paramDto: ArticleParamDto): Promise<Article> {
-        const data = await this.articleService.getArticle(paramDto.articleId);
-
-        return data;
+    @Auth([AuthMode.DOCTOR_GUARD])
+    @Get('articles-of-doctor')
+    public async getArticlesOfDoctor(@jwt() doctor: Doctor, @Query() queryDto: GetArticlesQueryDto): Promise<ArticleResponse> {
+        const [data, total] = await this.articleService.getArticles(
+            doctor.id,
+            queryDto.keyword
+        );
+        return { data, total };
     }
 
     @ApiResponse({
@@ -65,12 +68,22 @@ export class ArticleController {
     public async getArticles(@Query() queryDto: GetArticlesQueryDto): Promise<ArticleResponse> {
         const [data, total] = await this.articleService.getArticles(
             null,
-            queryDto.title,
-            queryDto.content,
-            queryDto.category,
-            queryDto.tag
+            queryDto.keyword
         );
         return { data, total };
+    }
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: Article,
+        description: 'Get schedule is successfully'
+    })
+    @HttpCode(HttpStatus.OK)
+    @Get('/:articleId')
+    public async getArticle(@Param() paramDto: ArticleParamDto): Promise<Article> {
+        const data = await this.articleService.getArticle(paramDto.articleId);
+
+        return data;
     }
 
     @ApiResponse({
@@ -92,6 +105,20 @@ export class ArticleController {
             bodyDto.categories,
             bodyDto.tags
         );
+        return data;
+    }
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: Article,
+        description: 'Delete article is successfully'
+    })
+    @HttpCode(HttpStatus.OK)
+    @Auth([AuthMode.DOCTOR_GUARD])
+    @Delete('articles-of-doctor/:articleId')
+    public async deleteArticleOfDoctor(@jwt() doctor: Doctor | Admin, @Param() paramDto: ArticleParamDto): Promise<boolean> {
+        const data = await this.articleService.deleteArticle(paramDto.articleId, doctor.id);
+
         return data;
     }
 

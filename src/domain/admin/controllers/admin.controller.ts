@@ -8,7 +8,7 @@ import { plainToClass } from 'class-transformer';
 import { DeleteResult } from 'typeorm';
 import { AdminGuard, Auth, AuthMode } from '../../../common';
 
-@Controller('api/admin')
+@Controller('/api/admin')
 @ApiTags('Admin')
 export class AdminController {
     constructor(
@@ -23,7 +23,7 @@ export class AdminController {
         return await this.adminService.createAdmin(plainToClass(Admin, bodyDto));
     }
 
-    @Post('login')
+    @Post('/login')
     public async adminLogin(@Body() bodyDto: AdminLogInDto): Promise<{ accessToken: string }> {
         return await this.adminService.adminLogin(bodyDto.userName, bodyDto.password);
     }

@@ -7,7 +7,8 @@ export interface ArticleQueryOptions {
     id?: string;
     ids?: string[];
 
-    author?: string;
+    authorId?: string;
+    keyword?: string;
 
     title?: string;
     content?: string;
@@ -24,6 +25,7 @@ export interface ArticleQueryOptions {
 export class ArticleRepository extends Repository<Article> {
     public async getArticle(options: ArticleQueryOptions): Promise<Article> {
         const queryBuilder = this.createQueryBuilder('Article')
+            .leftJoinAndSelect('Article.doctor', 'doctor')
             .leftJoinAndSelect('Article.categories', 'Category')
             .leftJoinAndSelect('Article.tags', 'Tag');
 
@@ -34,8 +36,9 @@ export class ArticleRepository extends Repository<Article> {
 
     public async getArticles(options: ArticleQueryOptions): Promise<[Article[], number]> {
         const queryBuilder = this.createQueryBuilder('Article')
-        .leftJoinAndSelect('Article.categories', 'Category')
-        .leftJoinAndSelect('Article.tags', 'Tag');
+            .leftJoinAndSelect('Article.doctor', 'doctor')
+            .leftJoinAndSelect('Article.categories', 'Category')
+            .leftJoinAndSelect('Article.tags', 'Tag');
 
         this.applyQueryOptions(queryBuilder, options);
 
@@ -72,12 +75,27 @@ export class ArticleRepository extends Repository<Article> {
             queryBuilder.andWhere('Tag.name LIKE :tag', { tag: `${options.tag}` });
         }
 
+        if (!isNil(options.authorId)) {
+            queryBuilder.andWhere('doctor.id = :authorId', { authorId: options.authorId });
+        }
+
         if (!isNil(options.categoryId)) {
             queryBuilder.andWhere('Category.id = :categoryId', { categoryId: options.categoryId });
         }
 
         if (!isNil(options.tagId)) {
             queryBuilder.andWhere('Tag.id = :tagId', { tagId: options.tagId });
+        }
+
+        if (!isNil(options.keyword)) {
+            queryBuilder.andWhere('(Article.title LIKE :title OR Category.name LIKE :category OR Tag.name LIKE :tag)', {
+                title: `%${options.keyword}%`,
+                category: `%${options.keyword}%`,
+                tag: `%${options.keyword}%`
+            });
+            // .orWhere('Article.content LIKE :content', { content: `%${options.keyword}%` })
+            // .orWhere('Category.name LIKE :category', { category: `%${options.keyword}%` })
+            // .orWhere('Tag.name LIKE :tag', { tag: `%${options.keyword}%` })
         }
 
         return queryBuilder;
