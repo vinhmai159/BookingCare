@@ -1,4 +1,4 @@
-import { PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, Entity, JoinColumn } from 'typeorm';
+import { PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Expertise } from '../../expertise';
 import { OneToOne } from 'typeorm';
@@ -37,11 +37,11 @@ export class Doctor {
     @Column()
     salt: string;
 
-    @OneToOne(() => Expertise)
+    @ManyToOne(() => Expertise)
     @JoinColumn()
     expertise: Expertise;
 
-    @OneToOne(() => Hospital)
+    @ManyToOne(() => Hospital)
     @JoinColumn()
     hospital: Hospital;
 

@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Hospital } from './entities';
 import { HospitalRepository } from './repositories';
 import { HospitalController } from './controllers';
+import { DoctorQueryHandlers } from './queries/handlers';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const serviceProviders = [
     {
@@ -14,9 +16,9 @@ const serviceProviders = [
 ];
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Hospital, HospitalRepository])],
+    imports: [TypeOrmModule.forFeature([Hospital, HospitalRepository]), CqrsModule],
     controllers: [HospitalController],
-    providers: [...serviceProviders],
+    providers: [...serviceProviders, ...DoctorQueryHandlers],
     exports: [...serviceProviders]
 })
 export class HospitalModule {}

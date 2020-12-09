@@ -57,7 +57,12 @@ export class DoctorController {
     @Auth([AuthMode.ADMIN_GUARD])
     @Post('/create')
     async createDoctor(@Body() doctorDto: CreateDoctorQueryDto): Promise<Doctor> {
-        return await this.doctorService.createDoctor(plainToClass(Doctor, doctorDto), null);
+        return await this.doctorService.createDoctor(
+            plainToClass(Doctor, doctorDto),
+            null,
+            doctorDto.expertiseId,
+            doctorDto.hospitalId
+        );
     }
 
     @Get('/public/:id')
@@ -65,10 +70,9 @@ export class DoctorController {
         return await this.doctorService.getDoctorById(dto.id);
     }
 
-
     @ApiBearerAuth()
     @Auth([AuthMode.DOCTOR_GUARD])
-    @Get('/:id')
+    @Get('/account')
     async getDoctorById(@jwt() doctor: Doctor): Promise<Doctor> {
         return await this.doctorService.getDoctorById(doctor.id);
     }
@@ -85,8 +89,8 @@ export class DoctorController {
     @ApiBearerAuth()
     @Auth([AuthMode.DOCTOR_GUARD])
     @Put('/update')
-    async updateDoctor(@jwt() doctor: Doctor, @Body() updateDoctorDto: UpdateDoctorQueryDto): Promise<Doctor> {
-        return await this.doctorService.updateDoctor(doctor.id, updateDoctorDto);
+    async updateDoctor(@jwt() doctor: Doctor, @Body() bodyDto: UpdateDoctorQueryDto): Promise<Doctor> {
+        return await this.doctorService.updateDoctor(doctor.id, plainToClass(Doctor, bodyDto));
     }
 
     @ApiBearerAuth()
@@ -94,9 +98,9 @@ export class DoctorController {
     @Put('/admin/:id/update')
     async updateDoctorForAdmin(
         @Param() paramDto: IdDoctorParamDto,
-        @Body() updateDoctorDto: UpdateDoctorQueryDto
+        @Body() bodyDto: UpdateDoctorQueryDto
     ): Promise<Doctor> {
-        return await this.doctorService.updateDoctor(paramDto.id, updateDoctorDto);
+        return await this.doctorService.updateDoctor(paramDto.id, plainToClass(Doctor, bodyDto));
     }
 
     @ApiBearerAuth()

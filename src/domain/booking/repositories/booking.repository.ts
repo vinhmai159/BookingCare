@@ -4,6 +4,7 @@ import { BookingStatus } from '../constants';
 import { Booking } from '../entities';
 import { isNil } from 'lodash';
 import { MedicalRecord } from '../../medical-record/entities/medical-record.entity';
+import { Schedule } from '../../schedules/entities/schedule.entity';
 
 export interface BookingQueryOptions {
     id?: string;
@@ -19,7 +20,7 @@ export interface BookingQueryOptions {
 @EntityRepository(Booking)
 export class BookingRepository extends Repository<Booking> {
     public async getBooking(options: BookingQueryOptions): Promise<Booking> {
-        const queryBuilder = this.createQueryBuilder('Booking');
+        const queryBuilder = this.createQueryBuilder('Booking').leftJoinAndSelect('Booking.user', 'user');
 
         this.applyQueryOptions(queryBuilder, options);
 
@@ -38,8 +39,10 @@ export class BookingRepository extends Repository<Booking> {
         return queryBuilder.getManyAndCount();
     }
 
-    public async UpdateStatus(booking: Booking, medicalRecord: MedicalRecord): Promise<Booking> {
+    public async UpdateStatus(booking: Booking, medicalRecord: MedicalRecord, schedule: Schedule): Promise<Booking> {
         return await this.manager.transaction(async (entityManager) => {
+            await entityManager.getRepository(Schedule).save(schedule);
+
             await entityManager.getRepository(MedicalRecord).save(medicalRecord);
 
             return await entityManager.getRepository(Booking).save(booking);

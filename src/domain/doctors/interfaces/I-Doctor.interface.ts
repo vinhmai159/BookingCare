@@ -1,9 +1,7 @@
-import { Doctor } from '../entities/doctor.entity';
 import { DeleteResult } from 'typeorm';
-import { Schedule } from '../../schedules';
-import {UpdateDoctorQueryDto, IdDoctorParamDto} from '../dto';
+import { Doctor } from '../entities/doctor.entity';
 export interface IDoctorService {
-    createDoctor(doctor: Doctor, path: string): Doctor | Promise<Doctor>;
+    createDoctor(doctor: Doctor, path: string, expertiseId: string, hospitalId: string): Doctor | Promise<Doctor>;
 
     getDoctorById(id: string): Promise<Doctor>;
 
@@ -11,9 +9,9 @@ export interface IDoctorService {
 
     deleteDoctor(id: string): Promise<DeleteResult>;
 
-    updateDoctor(id: string, doctor: UpdateDoctorQueryDto): Promise<Doctor>;
+    updateDoctor(id: string, doctor: Doctor): Promise<Doctor>;
 
-    doctorLogin(email: string, password: string): Promise<{ accessToken: string}>;
+    doctorLogin(email: string, password: string): Promise<{ accessToken: string }>;
 
-    saveDoctor(dotor: Doctor):Doctor | Promise<Doctor>;
+    saveDoctor(dotor: Doctor): Doctor | Promise<Doctor>;
 }

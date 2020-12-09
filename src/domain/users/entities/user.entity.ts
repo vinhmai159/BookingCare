@@ -1,7 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Expose } from 'class-transformer';
 import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { Schedule } from '../../schedules';
 
 @Entity('users')
 export class User {
@@ -29,7 +28,7 @@ export class User {
         nullable: true,
         default: null
     })
-    birthday: string;
+    birthday: Date;
 
     @Column({
         nullable: true
@@ -40,13 +39,6 @@ export class User {
         nullable: true
     })
     gender: string;
-
-    @OneToOne(
-        () => Schedule,
-        schedule => schedule.user
-    )
-    @JoinColumn()
-    schedule: Schedule;
 
     @CreateDateColumn({ type: 'timestamp' })
     createAt: Date;

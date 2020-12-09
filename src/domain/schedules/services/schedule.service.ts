@@ -122,7 +122,6 @@ export class ScheduleService implements IScheduleService {
                 result.MONDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -132,7 +131,6 @@ export class ScheduleService implements IScheduleService {
                 result.TUESDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -142,7 +140,6 @@ export class ScheduleService implements IScheduleService {
                 result.WEDNESDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -152,7 +149,6 @@ export class ScheduleService implements IScheduleService {
                 result.THURSDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -162,7 +158,6 @@ export class ScheduleService implements IScheduleService {
                 result.FRIDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -172,7 +167,6 @@ export class ScheduleService implements IScheduleService {
                 result.SATURDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });
@@ -182,7 +176,6 @@ export class ScheduleService implements IScheduleService {
                 result.SUNDAY.push({
                     scheduleId: data.id,
                     busy: data.busy,
-                    bookingBy: data.user,
                     calenderId: data.calender.id,
                     timeSlot: data.calender.timeslot.name
                 });

@@ -11,20 +11,17 @@ export class CalenderRepository extends Repository<Calender> {
     }
 
     async getCalender(day: DayOfWeek, timeSlotName: string): Promise<Calender[]> {
-        const calender = this.createQueryBuilder('calender');
+        const calender = this.createQueryBuilder('calender').leftJoinAndSelect('calender.timeslot', 'timeslot');
 
         if (day) {
-            calender.orWhere('calender.day LIKE :day', { day });
+            calender.andWhere('calender.day LIKE :day', { day });
         }
 
         if (timeSlotName) {
-            calender
-                .leftJoin('calender.timeslot', 'timeslot')
-                .orWhere('timeslot.name LIKE :timeSlotName', { timeSlotName: `%${timeSlotName}%` });
+            calender.andWhere('timeslot.name LIKE :timeSlotName', { timeSlotName: `%${timeSlotName}%` });
         }
 
         return await calender
-            .leftJoinAndSelect('calender.timeslot', 'timeslot')
             .orderBy('calender.day', 'ASC')
             .addOrderBy('timeslot.name', 'ASC')
             .getMany();

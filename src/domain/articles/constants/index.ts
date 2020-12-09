@@ -6,3 +6,9 @@ export enum AuthorType {
     ADMIN = 'ADMIN',
     DOCTOR = 'DOCTOR'
 }
+
+export enum ArticleStatus {
+    PENDING = 'PENDING',
+    APPROVE = 'APPROVE',
+    REJECT = 'REJECT'
+}

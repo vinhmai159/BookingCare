@@ -43,8 +43,8 @@ export class BookingService implements IBookingService {
         return data;
     }
 
-    public async getBooking(bookingId?: string, userId?: string, scheduleId?: string): Promise<Booking> {
-        const data = await this.bookingRepository.getBooking({ id: bookingId, userId, scheduleId });
+    public async getBooking(bookingId?: string, scheduleId?: string): Promise<Booking> {
+        const data = await this.bookingRepository.getBooking({ id: bookingId, scheduleId });
 
         if (isNil(data)) {
             throw new NotFoundException('The booking was not found!');
@@ -65,6 +65,7 @@ export class BookingService implements IBookingService {
 
     public async updateStatus(
         bookingId: string,
+        scheduleId: string,
         status: BookingStatus,
         medicalRecord: MedicalRecord
     ): Promise<Booking> {
@@ -74,11 +75,17 @@ export class BookingService implements IBookingService {
             throw new NotFoundException('The booking was not found!');
         }
 
+        const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(
+            new GetScheduleByIdQuery(scheduleId)
+        );
+
+        schedule.busy = false;
+
         booking.status = status;
         medicalRecord.id = uuid();
         medicalRecord.user = booking.user;
 
-        const data = await this.bookingRepository.UpdateStatus(booking, medicalRecord);
+        const data = await this.bookingRepository.UpdateStatus(booking, medicalRecord, schedule);
 
         return data;
     }
