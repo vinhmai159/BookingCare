@@ -7,7 +7,11 @@ export interface IBookingService {
 
     getBooking(bookingId?: string, scheduleId?: string): Booking | Promise<Booking>;
 
+    getUserBooking(userId: string): Booking[] | Promise<Booking[]>;
+
     getBookings(doctorId: string): Booking[] | Promise<Booking[]>;
 
     updateStatus(bookingId: string, scheduleId: string, status: BookingStatus, medicalRecord: MedicalRecord): Booking | Promise<Booking>;
+
+    rejectBooking(bookingId: string, scheduleId: string): Booking | Promise<Booking>;
 }

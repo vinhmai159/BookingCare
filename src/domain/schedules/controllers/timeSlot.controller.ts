@@ -11,7 +11,7 @@ import { AdminGuard, Auth, AuthMode } from '../../../common';
 @ApiTags('timeslot')
 @Controller('/timeslot')
 @ApiBearerAuth()
-@Auth([AuthMode.ADMIN_GUARD, AuthMode.DOCTOR_GUARD])
+// @Auth([AuthMode.ADMIN_GUARD, AuthMode.DOCTOR_GUARD])
 export class TimeSlotController {
     constructor(
         @Inject(TimeSlotServiceToken)
@@ -19,8 +19,8 @@ export class TimeSlotController {
     ) {}
 
     @Post('create')
-    async createTimeSlot(@Body() timeSlotDto: SaveTimeSlotDataQueryDto): Promise<TimeSlot> {
-        return await this.timeSlotService.createTimeSlot(plainToClass(TimeSlot, timeSlotDto));
+    async createTimeSlot(@Body() bodyDto: UpdateTimeSlotQueryDto): Promise<TimeSlot> {
+        return await this.timeSlotService.createTimeSlot(bodyDto.startTime, bodyDto.endTime);
     }
 
     @Get()
@@ -34,7 +34,7 @@ export class TimeSlotController {
     }
 
     @Delete('delete/:id')
-    async deleteTimeSlot(@Param() dto: TimeSlotIdParamDto): Promise<DeleteResult> {
+    async deleteTimeSlot(@Param() dto: TimeSlotIdParamDto): Promise<boolean> {
         return await this.timeSlotService.deleteTimeSlot(dto.id);
     }
 

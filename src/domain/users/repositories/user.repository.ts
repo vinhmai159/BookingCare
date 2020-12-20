@@ -7,19 +7,11 @@ export class UserRepository extends Repository<User> {
         return this.save(user);
     }
 
-    public async getUsers(name?: string, email?: string, address?: string): Promise<[User[], number]> {
+    public async getUsers(data?: string): Promise<[User[], number]> {
         const users = this.createQueryBuilder('user');
 
-        if (name) {
-            users.andWhere('user.fistName LIKE :name OR user.lastName LIKE :name', { name: `%${name}%` });
-        }
-
-        if (email) {
-            users.andWhere('user.email LIKE :email', { email: `%${email}%` });
-        }
-
-        if (address) {
-            users.andWhere('user.address LIKE :address', { address: `%${address}%` });
+        if (data) {
+            users.andWhere('(user.fistName LIKE :data OR user.lastName LIKE :data OR user.email LIKE :data OR user.address LIKE :data)', { data: `%${data}%` });
         }
 
         users

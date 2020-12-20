@@ -14,7 +14,7 @@ export class Calender {
 
     @Column()
     @IsEnum(DayOfWeek)
-    day: DayOfWeek;
+    day: DayOfWeek | string;
 
     @CreateDateColumn({ type: 'timestamp' })
     public createAt: Date;

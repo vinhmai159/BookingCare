@@ -10,21 +10,5 @@ export class GetUserBodyDto {
     @ApiProperty({
         required: false
     })
-    name?: string;
-
-    @Expose()
-    @IsString()
-    @IsOptional()
-    @ApiProperty({
-        required: false
-    })
-    email?: string;
-
-    @Expose()
-    @IsString()
-    @IsOptional()
-    @ApiProperty({
-        required: false
-    })
-    address?: string;
+    data?: string;
 }

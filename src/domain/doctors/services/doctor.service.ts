@@ -26,13 +26,15 @@ export class DoctorService implements IDoctorService {
         doctor.avatar = path;
 
         if (!isNil(expertiseId)) {
-            const expertise = await this.queryBus.execute<GetExpertiseQuery, Expertise>(new GetExpertiseQuery(expertiseId));
+            const expertise = await this.queryBus.execute<GetExpertiseQuery, Expertise>(
+                new GetExpertiseQuery(expertiseId)
+            );
             doctor.expertise = expertise;
         }
 
-        if(!isNil(hospitalId)) {
+        if (!isNil(hospitalId)) {
             const hospital = await this.queryBus.execute<GetHospitalQuery, Hospital>(new GetHospitalQuery(hospitalId));
-            doctor.expertise = hospital;
+            doctor.hospital = hospital;
         }
 
         return await this.doctorRepository.createDoctor(doctor);
@@ -49,11 +51,23 @@ export class DoctorService implements IDoctorService {
         return await this.doctorRepository.deleteDoctor(id);
     }
 
-    async updateDoctor(id: string, doctor: Doctor): Promise<Doctor> {
+    async updateDoctor(id: string, doctor: Doctor, expertiseId?: string, hospitalId?: string): Promise<Doctor> {
         const exitedDoctor = await this.doctorRepository.getDoctorById(id);
 
         if (isNil(exitedDoctor)) {
             throw new NotFoundException('Doctor was not found!');
+        }
+
+        if (!isNil(expertiseId)) {
+            const expertise = await this.queryBus.execute<GetExpertiseQuery, Expertise>(
+                new GetExpertiseQuery(expertiseId)
+            );
+            doctor.expertise = expertise;
+        }
+
+        if (!isNil(hospitalId)) {
+            const hospital = await this.queryBus.execute<GetHospitalQuery, Hospital>(new GetHospitalQuery(hospitalId));
+            doctor.hospital = hospital;
         }
 
         doctor.id = exitedDoctor.id;

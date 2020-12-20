@@ -32,9 +32,9 @@ export class UserService implements IUserService {
         return await this.userRepository.saveUser(user);
     }
 
-    public async getUsers(name?: string, email?: string, address?: string): Promise<[User[], number]> {
-        const [data, count] = await this.userRepository.getUsers(name, email, address);
-        return [data, count];
+    public async getUsers(data?: string): Promise<[User[], number]> {
+        const [existedData, total] = await this.userRepository.getUsers(data);
+        return [existedData, total];
     }
 
     public async getUserById(userId: string): Promise<any> {

@@ -20,11 +20,28 @@ export interface BookingQueryOptions {
 @EntityRepository(Booking)
 export class BookingRepository extends Repository<Booking> {
     public async getBooking(options: BookingQueryOptions): Promise<Booking> {
-        const queryBuilder = this.createQueryBuilder('Booking').leftJoinAndSelect('Booking.user', 'user');
+        const queryBuilder = this.createQueryBuilder('Booking')
+            .leftJoinAndSelect('Booking.user', 'user')
+            .leftJoinAndSelect('Booking.schedule', 'schedule')
+            .leftJoinAndSelect('schedule.doctor', 'doctor');
 
         this.applyQueryOptions(queryBuilder, options);
 
         return queryBuilder.getOne();
+    }
+
+    public async getUserBookings(options: BookingQueryOptions): Promise<[Booking[], number]> {
+        const queryBuilder = this.createQueryBuilder('Booking')
+            .leftJoinAndSelect('Booking.schedule', 'schedule')
+            .leftJoinAndSelect('schedule.doctor', 'doctor')
+            .leftJoinAndSelect('schedule.calender', 'calender')
+            .leftJoinAndSelect('calender.timeslot', 'timeslot');
+
+        this.applyQueryOptions(queryBuilder, options);
+
+        queryBuilder.addOrderBy('Booking.createAt', 'DESC');
+
+        return queryBuilder.getManyAndCount();
     }
 
     public async getBookings(options: BookingQueryOptions): Promise<[Booking[], number]> {
@@ -39,14 +56,16 @@ export class BookingRepository extends Repository<Booking> {
         return queryBuilder.getManyAndCount();
     }
 
-    public async UpdateStatus(booking: Booking, medicalRecord: MedicalRecord, schedule: Schedule): Promise<Booking> {
-        return await this.manager.transaction(async (entityManager) => {
+    public async UpdateStatus(booking: Booking, schedule: Schedule, medicalRecord?: MedicalRecord): Promise<Booking> {
+        return await this.manager.transaction(async entityManager => {
             await entityManager.getRepository(Schedule).save(schedule);
 
-            await entityManager.getRepository(MedicalRecord).save(medicalRecord);
+            if (!isNil(medicalRecord)) {
+                await entityManager.getRepository(MedicalRecord).save(medicalRecord);
+            }
 
             return await entityManager.getRepository(Booking).save(booking);
-        })
+        });
     }
 
     private applyQueryOptions(

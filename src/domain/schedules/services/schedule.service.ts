@@ -7,6 +7,7 @@ import { CalenderServiceToken, DayOfWeek } from '../constants';
 import { Schedule } from '../entities';
 import { ICalenderService, IScheduleService } from '../interfaces';
 import { ScheduleRepository } from '../repositories';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class ScheduleService implements IScheduleService {
@@ -25,6 +26,13 @@ export class ScheduleService implements IScheduleService {
 
         schedule.doctor = doctor;
         for (let key = 0; key < calenderIds.length; key++) {
+            const existedSchedule = await this.scheduleRepository.getExistedSchedule(doctor.id, calenderIds[key])
+
+            if (!isNil(existedSchedule)) {
+                const existedCalender = await this.calenderService.getCalenderById(existedSchedule.calender.id);
+                throw new BadRequestException(`The calender ${existedCalender.day} ${existedCalender.timeslot.name} is not available.`)
+            }
+
             schedule.id = uuid();
             const calender = await this.calenderService.getCalenderById(calenderIds[key]);
             schedule.calender = calender;

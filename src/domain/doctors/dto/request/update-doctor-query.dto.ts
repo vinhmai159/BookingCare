@@ -27,4 +27,9 @@ export class UpdateDoctorQueryDto {
     @ApiProperty()
     @IsOptional()
     expertiseId?: string;
+
+    @Expose()
+    @ApiProperty()
+    @IsOptional()
+    hospitalId?: string;
 }

@@ -1,10 +1,28 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Inject,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth, AuthMode, DoctorGuard, jwt, UserGuard } from '../../../common';
 import { Doctor } from '../../doctors';
 import { User } from '../../users';
 import { BookingServiceToken } from '../constants';
-import { BookingQueryDto, CompleteMedicalRecordQueryDto, CreateMedicalRecordDto, ScheduleQueryDto } from '../dto';
+import {
+    BookingQueryDto,
+    CompleteMedicalRecordQueryDto,
+    CreateMedicalRecordDto,
+    ScheduleQueryDto,
+    RejectBookingQueryDto
+} from '../dto';
 import { Booking } from '../entities';
 import { IBookingService } from '../interfaces';
 
@@ -48,6 +66,20 @@ export class BookingController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: [Booking],
+        description: 'get schedule was Booked is successfully'
+    })
+    @HttpCode(HttpStatus.OK)
+    @Auth([AuthMode.USER_GUARD])
+    @Get('/get-user-booking')
+    public async getUserBooking(@jwt() user: User): Promise<Booking[]> {
+        const data = await this.bookingService.getUserBooking(user.id);
+
+        return data;
+    }
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [Booking],
         description: 'get schedule were Booked is successfully'
     })
     @HttpCode(HttpStatus.OK)
@@ -66,13 +98,31 @@ export class BookingController {
     })
     @HttpCode(HttpStatus.OK)
     @Auth([AuthMode.DOCTOR_GUARD])
-    @Put('/complete-medical-record')
+    @Post('/complete-medical-record')
     public async updateStatus(
         @Query() queryDto: CompleteMedicalRecordQueryDto,
         @Body() bodyDto: CreateMedicalRecordDto
     ): Promise<Booking> {
         bodyDto.validate(queryDto.status);
-        const data = await this.bookingService.updateStatus(queryDto.bookingId, queryDto.scheduleId, queryDto.status, bodyDto.toEntity());
+        const data = await this.bookingService.updateStatus(
+            queryDto.bookingId,
+            queryDto.scheduleId,
+            queryDto.status,
+            bodyDto.toEntity()
+        );
+
+        return data;
+    }
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: Booking
+    })
+    @HttpCode(HttpStatus.OK)
+    @Auth([AuthMode.DOCTOR_GUARD])
+    @Post('/reject-booking')
+    public async rejectBooking(@Query() queryDto: RejectBookingQueryDto): Promise<Booking> {
+        const data = await this.bookingService.rejectBooking(queryDto.bookingId, queryDto.scheduleId);
 
         return data;
     }

@@ -100,7 +100,7 @@ export class DoctorController {
         @Param() paramDto: IdDoctorParamDto,
         @Body() bodyDto: UpdateDoctorQueryDto
     ): Promise<Doctor> {
-        return await this.doctorService.updateDoctor(paramDto.id, plainToClass(Doctor, bodyDto));
+        return await this.doctorService.updateDoctor(paramDto.id, plainToClass(Doctor, bodyDto), bodyDto.expertiseId, bodyDto.hospitalId);
     }
 
     @ApiBearerAuth()
