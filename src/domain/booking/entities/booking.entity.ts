@@ -26,6 +26,9 @@ export class Booking extends BaseEntity {
     })
     status: BookingStatus;
 
+    @Column({ type: 'timestamp', default: null })
+    date: Date;
+
     @ManyToOne(() => User)
     @JoinColumn()
     user: User;

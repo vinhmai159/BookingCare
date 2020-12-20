@@ -6,5 +6,10 @@ export class UpdateTimeSlotQueryDto {
     @ApiProperty()
     @Expose()
     @IsString()
-    name: string;
+    startTime: string;
+
+    @ApiProperty()
+    @Expose()
+    @IsString()
+    endTime: string;
 }

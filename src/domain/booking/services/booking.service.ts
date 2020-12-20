@@ -10,6 +10,7 @@ import { BookingRepository } from '../repositories';
 import { isNil } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import { MedicalRecord } from '../../medical-record';
+import { weekday } from '../constants/index';
 
 @Injectable()
 export class BookingService implements IBookingService {
@@ -18,6 +19,12 @@ export class BookingService implements IBookingService {
         private readonly bookingRepository: BookingRepository,
         private readonly queryBus: QueryBus
     ) {}
+
+    private addDays(currentDate: Date, days: number) {
+        currentDate.setDate(currentDate.getDate() + days);
+
+        return currentDate;
+    }
 
     public async createBooking(userId: string, scheduleId: string): Promise<Booking> {
         const booking = new Booking();
@@ -32,9 +39,31 @@ export class BookingService implements IBookingService {
             throw new BadRequestException('The schedule of doctor is busy');
         }
 
+        let existedDay: number;
+        for (const index in weekday) {
+            if (schedule.calender.day === weekday[index]) {
+                existedDay = Number(index);
+            }
+        }
+
+        const toDate = new Date();
+        const toDay = toDate.getDay();
+
+        let date: Date;
+
+        const dayDifference = toDay - existedDay;
+        if (dayDifference < 0) {
+            date = this.addDays(toDate, -dayDifference);
+        } else if (dayDifference > 0) {
+            date = this.addDays(toDate, 7 - dayDifference);
+        } else if (dayDifference === 0) {
+            throw new BadRequestException('Can not booking this date.')
+        }
+
         booking.user = user;
         booking.schedule = schedule;
         booking.status = BookingStatus.BOOKED;
+        booking.date = date;
 
         const data = await this.bookingRepository.save(booking);
         schedule.busy = true;
@@ -49,6 +78,12 @@ export class BookingService implements IBookingService {
         if (isNil(data)) {
             throw new NotFoundException('The booking was not found!');
         }
+
+        return data;
+    }
+
+    public async getUserBooking(userId: string): Promise<Booking[]> {
+        const [data, total] = await this.bookingRepository.getUserBookings({ userId, status: BookingStatus.BOOKED });
 
         return data;
     }
@@ -85,7 +120,31 @@ export class BookingService implements IBookingService {
         medicalRecord.id = uuid();
         medicalRecord.user = booking.user;
 
-        const data = await this.bookingRepository.UpdateStatus(booking, medicalRecord, schedule);
+        const data = await this.bookingRepository.UpdateStatus(booking, schedule, medicalRecord);
+
+        return data;
+    }
+
+    public async rejectBooking(bookingId: string, scheduleId: string): Promise<Booking> {
+        const booking = await this.bookingRepository.getBooking({ id: bookingId });
+
+        if (isNil(booking)) {
+            throw new NotFoundException('The booking was not found!');
+        }
+
+        if (new Date(booking.date) >= new Date()) {
+            throw new NotFoundException('Can not reject schedule, because it unexpired');
+        }
+
+        const schedule = await this.queryBus.execute<GetScheduleByIdQuery, Schedule>(
+            new GetScheduleByIdQuery(scheduleId)
+        );
+
+        schedule.busy = false;
+
+        booking.status = BookingStatus.REJECT;
+
+        const data = await this.bookingRepository.UpdateStatus(booking, schedule);
 
         return data;
     }

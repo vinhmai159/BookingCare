@@ -55,7 +55,7 @@ export class UserController {
     @Auth([AuthMode.ADMIN_GUARD])
     @Get()
     public async getUsers(@Query() queryDto?: GetUserBodyDto): Promise<any> {
-        const [data, count] = await this.userService.getUsers(queryDto.name, queryDto.email, queryDto.address);
+        const [data, count] = await this.userService.getUsers(queryDto.data);
         return { data, count };
     }
 

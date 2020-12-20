@@ -11,7 +11,9 @@ export class CalenderRepository extends Repository<Calender> {
     }
 
     async getCalender(day: DayOfWeek, timeSlotName: string): Promise<Calender[]> {
-        const calender = this.createQueryBuilder('calender').leftJoinAndSelect('calender.timeslot', 'timeslot');
+        const calender = this.createQueryBuilder('calender')
+            .leftJoinAndSelect('calender.timeslot', 'timeslot')
+            .andWhere('timeslot.deletedAt IS NULL');
 
         if (day) {
             calender.andWhere('calender.day LIKE :day', { day });

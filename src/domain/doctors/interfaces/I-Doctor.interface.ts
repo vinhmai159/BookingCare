@@ -9,7 +9,7 @@ export interface IDoctorService {
 
     deleteDoctor(id: string): Promise<DeleteResult>;
 
-    updateDoctor(id: string, doctor: Doctor): Promise<Doctor>;
+    updateDoctor(id: string, doctor: Doctor, expertiseId?: string, hospitalId?: string): Promise<Doctor>;
 
     doctorLogin(email: string, password: string): Promise<{ accessToken: string }>;
 

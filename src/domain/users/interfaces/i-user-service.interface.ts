@@ -4,7 +4,7 @@ import { Schedule } from '../../schedules/entities/schedule.entity';
 export interface IUserService {
     createUser(user: User): Promise<User>;
 
-    getUsers(name?: string, email?: string, address?: string): Promise<[User[], number]>;
+    getUsers(data?: string): Promise<[User[], number]>;
 
     getUserById(id: string): Promise<User>;
 

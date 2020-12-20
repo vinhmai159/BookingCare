@@ -18,6 +18,15 @@ export class ScheduleRepository extends Repository<Schedule> {
             .getOne();
     }
 
+    public async getExistedSchedule(doctorId: string, calenderId: string): Promise<Schedule> {
+        return await this.createQueryBuilder('schedule')
+            .where('schedule.doctorId = :doctorId', { doctorId })
+            .andWhere('schedule.calenderId = :calenderId', { calenderId })
+            .leftJoinAndSelect('schedule.calender', 'calender')
+            .leftJoinAndSelect('calender.timeslot', 'timeslot')
+            .getOne();
+    }
+
     async getScheduleByDoctor(doctorId: string, day?: DayOfWeek): Promise<Schedule[]> {
         const scheduleByDoctor = this.createQueryBuilder('schedule')
             .where('schedule.doctorId = :doctorId', { doctorId })
